@@ -4,6 +4,8 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-08-30  $ ExecAllocMem() for Amiga and AROS
+//             $ VFPrintf() overloads for Amiga and MorphOS.
 // 2015-08-29  $ Type PPObject_ for Amiga and MorphOS
 // 2015-08-27  $ Use out parameters instead of var to shut up compiler hints.
 // 2015-08-26  $ GetTagData(), Amiga sugar-coating hints.
@@ -289,9 +291,53 @@ Type
 
 //////////////////////////////////////////////////////////////////////////////
 //
+//  Topic: ExecAllocMem()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  function ExecAllocMem(byteSize: ULONG location 'd0'; requirements: ULONG location 'd1'): POINTER; syscall _ExecBase 198;
+  {$ENDIF}
+  {$IFDEF AROS}
+  function ExecAllocMem(ByteSize: ULONG; Requirements: ULONG): APTR; syscall AOS_ExecBase 33;
+  {$ENDIF}
+  
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: VFPrintf()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  function VFPrintf(fh: LongInt location 'd1';const format: pCHAR location 'd2';const argarray : PLongInt location 'd3'): LongInt; syscall _DOSBase 354; overload;
+  {$ENDIF}
+
+  {$IFDEF MORPHOS}
+  function VFPrintf(fh: LongInt location 'd1'; format: PChar location 'd2'; argarray: PLongInt location 'd3'): LongInt; SysCall MOS_DOSBase 354; overload;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: 
+//
+//////////////////////////////////////////////////////////////////////////////
+
 
 
 implementation
@@ -696,6 +742,7 @@ end;
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
+
 
 
 end.
