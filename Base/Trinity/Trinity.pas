@@ -6,6 +6,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // 2015-08-30  $ ExecAllocMem() for Amiga and AROS
 //             $ VFPrintf() overloads for Amiga and MorphOS.
+//             $ Info() overload for Amiga
 // 2015-08-29  $ Type PPObject_ for Amiga and MorphOS
 // 2015-08-27  $ Use out parameters instead of var to shut up compiler hints.
 // 2015-08-26  $ GetTagData(), Amiga sugar-coating hints.
@@ -39,7 +40,7 @@ interface
 
 
 Uses
-  Exec, Intuition, Utility;
+  Exec, AmigaDOS, Intuition, Utility;
 
 
 
@@ -320,6 +321,20 @@ Type
 
   {$IFDEF MORPHOS}
   function VFPrintf(fh: LongInt location 'd1'; format: PChar location 'd2'; argarray: PLongInt location 'd3'): LongInt; SysCall MOS_DOSBase 354; overload;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: Info()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  function Info(lock: LongInt location 'd1'; parameterBlock: pInfoData location 'd2'): LongInt; syscall _DOSBase 114; overload;
   {$ENDIF}
 
 
@@ -734,6 +749,14 @@ begin
   SetLength(Tags, 0);
 end;
 {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: 
+//
+//////////////////////////////////////////////////////////////////////////////
 
 
 
