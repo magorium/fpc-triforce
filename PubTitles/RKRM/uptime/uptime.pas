@@ -1,7 +1,5 @@
 program uptime;
 
-{$MODE OBJFPC}{$H+}
-
 {$IFNDEF HASAMIGA}
 {$FATAL This source is compatible with Amiga, AROS and MorphOS only !}
 {$ENDIF}
@@ -11,11 +9,14 @@ program uptime;
   Source    : RKRM
 }
 
-{$UNITPATH ../../../Trinity}
+{$MODE OBJFPC}{$H+}
+
+{$UNITPATH ../../../Base/Trinity}
 
 Uses
   Exec, AmigaDOS, Utility,
   Trinity;
+
 
 {$IFNDEF HASAMIGA}
 Var
