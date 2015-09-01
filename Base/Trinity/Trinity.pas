@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-09-01  $ Amiga + MorphOS OBJ_xxx macros
 // 2015-08-30  $ ExecAllocMem() for Amiga and AROS
 //             $ VFPrintf() overloads for Amiga and MorphOS.
 //             $ Info() overload for Amiga
@@ -40,7 +41,11 @@ interface
 
 
 Uses
-  Exec, AmigaDOS, Intuition, Utility;
+  Exec, AmigaDOS, 
+  {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+  AGraphics,  // for the OBJ_xxx macro's
+  {$ENDIF}
+  Intuition, Utility;
 
 
 
@@ -341,6 +346,50 @@ Type
 
 //////////////////////////////////////////////////////////////////////////////
 //
+//  Topic: OBJ_xxx macro's
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+  function  OBJ_App         (obj : APTR) : PObject_;
+  function  OBJ_Win         (obj : APTR) : PObject_;
+  function  OBJ_Dri         (obj : APTR) : pDrawInfo;
+  function  OBJ_Screen      (obj : APTR) : pScreen;
+  function  OBJ_Pens        (obj : APTR) : pWord;
+  function  OBJ_Window      (obj : APTR) : pWindow;
+  function  OBJ_Rp          (obj : APTR) : pRastPort;
+  function  OBJ_Left        (obj : APTR) : smallint;
+  function  OBJ_Top         (obj : APTR) : smallint;
+  function  OBJ_Width       (obj : APTR) : smallint;
+  function  OBJ_Height      (obj : APTR) : smallint;
+  function  OBJ_Right       (obj : APTR) : smallint;
+  function  OBJ_Bottom      (obj : APTR) : smallint;
+  function  OBJ_AddLeft     (obj : APTR) : smallint;
+  function  OBJ_AddTop      (obj : APTR) : smallint;
+  function  OBJ_SubWidth    (obj : APTR) : smallint;
+  function  OBJ_SubHeight   (obj : APTR) : smallint;
+  function  OBJ_MLeft       (obj : APTR) : smallint;
+  function  OBJ_MTop        (obj : APTR) : smallint;
+  function  OBJ_MWidth      (obj : APTR) : smallint;
+  function  OBJ_MHeight     (obj : APTR) : smallint;
+  function  OBJ_MRight      (obj : APTR) : smallint;
+  function  OBJ_MBottom     (obj : APTR) : smallint;
+  function  OBJ_Font        (obj : APTR) : pTextFont;
+  function  OBJ_MinWidth    (obj : APTR) : LongWord;
+  function  OBJ_MinHeight   (obj : APTR) : LongWord;
+  function  OBJ_MaxWidth    (obj : APTR) : LongWord;
+  function  OBJ_MaxHeight   (obj : APTR) : LongWord;
+  function  OBJ_DefWidth    (obj : APTR) : LongWord;
+  function  OBJ_DefHeight   (obj : APTR) : LongWord;
+  function  OBJ_Flags       (obj : APTR) : LongWord;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -360,12 +409,12 @@ implementation
 
 {$IFDEF AMIGA}
 Uses
-  AmigaLib, tagsarray;
+  AmigaLib, tagsarray, MUI;
 {$ENDIF}
 
 {$IFDEF MORPHOS}
 Uses
-  AmigaLib;
+  AmigaLib, MUI;
 {$ENDIF}
 
 
@@ -747,6 +796,173 @@ begin
   Result := CoerceMethodA(cl, Obj, @(Tags[0]));
 
   SetLength(Tags, 0);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: OBJ_xxx macro's (blatant copy from AROS)
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+function OBJ_App(obj : APTR) : PObject_;
+begin
+  OBJ_App := MUIGlobalInfo(obj)^.mgi_ApplicationObject;
+end;
+
+function OBJ_Win(obj : APTR) : PObject_;
+begin
+  OBJ_Win := MUIRenderInfo(obj)^.mri_WindowObject;
+end;
+
+function OBJ_Dri(obj : APTR) : pDrawInfo;
+begin
+  OBJ_Dri := MUIRenderInfo(obj)^.mri_DrawInfo;
+end;
+
+function OBJ_Screen(obj : APTR) : pScreen;
+begin
+  OBJ_Screen := MUIRenderInfo(obj)^.mri_Screen;
+end;
+
+function OBJ_Pens(obj : APTR) : pWord;
+begin
+  OBJ_Pens := MUIRenderInfo(obj)^.mri_Pens;
+end;
+
+function OBJ_Window(obj : APTR) : pWindow;
+begin
+  OBJ_Window := MUIRenderInfo(obj)^.mri_Window;
+end;
+
+function OBJ_Rp(obj : APTR) : pRastPort;
+begin
+  OBJ_Rp := MUIRenderInfo(obj)^.mri_RastPort;
+end;
+
+function OBJ_Left(obj : APTR) : smallint;          
+begin
+  OBJ_Left := MUIAreaData(obj)^.mad_Box.Left;
+end;
+
+function OBJ_Top(obj : APTR) : smallint;           
+Begin
+  OBJ_Top := MUIAreaData(obj)^.mad_Box.Top;
+end;
+
+function OBJ_Width(obj : APTR) : smallint;         
+begin
+  OBJ_Width := MUIAreaData(obj)^.mad_Box.Width;
+end;
+
+function OBJ_Height(obj : APTR) : smallint;        
+begin
+  OBJ_Height := MUIAreaData(obj)^.mad_Box.Height;
+end;
+
+function OBJ_Right(obj : APTR) : smallint;         
+begin
+  OBJ_Right := OBJ_Left(obj) + OBJ_Width(obj) -1;
+end;
+
+function OBJ_Bottom(obj : APTR) : smallint;        
+begin
+  OBJ_Bottom := OBJ_Top(obj) + OBJ_Height(obj) -1;
+end;
+
+function OBJ_AddLeft(obj : APTR) : smallint;       
+begin
+  OBJ_AddLeft := MUIAreaData(obj)^.mad_AddLeft;
+end;
+
+function OBJ_AddTop(obj : APTR) : smallint;
+begin
+  OBJ_AddTop := MUIAreaData(obj)^.mad_AddTop;
+end;
+
+function OBJ_SubWidth(obj : APTR) : smallint;
+begin
+  OBJ_SubWidth := MUIAreaData(obj)^.mad_SubWidth;
+end;
+
+function OBJ_SubHeight(obj : APTR) : smallint;
+begin
+  OBJ_SubHeight := MUIAreaData(obj)^.mad_SubHeight;
+end;
+
+function OBJ_MLeft(obj : APTR) : smallint;
+begin
+  OBJ_MLeft := OBJ_Left(obj) + OBJ_AddLeft(obj);
+end;
+
+function OBJ_MTop(obj : APTR) : smallint;
+begin
+  OBJ_MTop := OBJ_Top(obj) + OBJ_AddTop(obj);
+end;
+
+function OBJ_MWidth(obj : APTR) : smallint;
+begin
+  OBJ_MWidth := OBJ_Width(obj) -OBJ_SubWidth(obj);
+end;
+
+function OBJ_MHeight(obj : APTR) : smallint;
+begin
+  OBJ_MHeight := OBJ_Height(obj) - OBJ_SubHeight(obj);
+end;
+
+function OBJ_MRight(obj : APTR) : smallint;
+begin
+  OBJ_MRight := OBJ_MLeft(obj) + OBJ_MWidth(obj) -1;
+end;
+
+function OBJ_MBottom(obj : APTR) : smallint;
+begin
+  OBJ_MBottom := OBJ_MTop(obj) + OBJ_MHeight(obj) -1;
+end;
+
+function OBJ_Font(obj : APTR) : pTextFont;
+begin
+  OBJ_Font := MUIAreaData(obj)^.mad_Font;
+end;
+
+function OBJ_MinWidth(obj : APTR) : LongWord;
+begin
+  OBJ_MinWidth := MUIAreaData(obj)^.mad_MinMax.MinWidth;
+end;
+
+function OBJ_MinHeight(obj : APTR) : LongWord;
+begin
+  OBJ_MinHeight := MUIAreaData(obj)^.mad_MinMax.MinHeight;
+end;
+
+function OBJ_MaxWidth(obj : APTR) : LongWord;
+begin
+  OBJ_maxWidth := MUIAreaData(obj)^.mad_MinMax.MaxWidth;
+end;
+
+function OBJ_MaxHeight(obj : APTR) : LongWord;
+begin
+  OBJ_maxHeight := MUIAreaData(obj)^.mad_MinMax.MaxHeight;
+end;
+
+function OBJ_DefWidth(obj : APTR) : LongWord;
+begin
+  OBJ_DefWidth := MUIAreaData(obj)^.mad_MinMax.DefWidth;
+end;
+
+function OBJ_DefHeight(obj : APTR) : LongWord;
+begin
+  OBJ_DefHeight := MUIAreaData(obj)^.mad_MinMax.DefHeight;
+end;
+
+function OBJ_Flags(obj : APTR) : LongWord;
+begin
+  OBJ_Flags := MUIAreaData(obj)^.mad_Flags;
 end;
 {$ENDIF}
 
