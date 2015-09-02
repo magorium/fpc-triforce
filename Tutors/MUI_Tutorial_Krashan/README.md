@@ -15,8 +15,8 @@ Where possible, Polish comments and names have been translated into English.
 Note that these MUI tutorial examples are copyrighted :copyright: by their respective 
 owners.
 
-| Original tutorial pages                                                     |
-| --------------------------------------------------------------------------- |
+ Original tutorial pages                                                     
+
 | Part number                                                  | Topic        |
 | ------------------------------------------------------------ | ------------ |
 | [Part 1](http://www.ppa.pl/programy/kurs-mui-czesc-1.html)   | tba          |
