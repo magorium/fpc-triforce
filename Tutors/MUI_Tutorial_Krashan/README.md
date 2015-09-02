@@ -12,7 +12,7 @@ for Amiga, AROS and MorphOS (using [Trinity](https://github.com/magorium/fpc-tri
 
 Where possible, Polish comments and names have been translated into English.
 
-Note that these MUI tutorial examples are copyrighted :copyright: by their respective 
+Note that the MUI tutorial and the examples are copyrighted :copyright: by their respective 
 owners.
 
  Original tutorial pages                                                     
