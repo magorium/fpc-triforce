@@ -19,7 +19,7 @@ owners.
 
 | Part number                                                  | Topic        | Files         |
 | ------------------------------------------------------------ | ------------ | ------------- |
-| [Part 1](http://www.ppa.pl/programy/kurs-mui-czesc-1.html)   | tba          |               |
+| [Part 1](http://www.ppa.pl/programy/kurs-mui-czesc-1.html)   | **Basics**<br>Boopsi classes | scene: A Boopsi class example |
 | [Part 2](http://www.ppa.pl/programy/kurs-mui-czesc-2.html)   | tba          |               |
 | [Part 3](http://www.ppa.pl/programy/kurs-mui-czesc-3.html)   | tba          |               |
 | [Part 4](http://www.ppa.pl/programy/kurs-mui-czesc-4.html)   | tba          |               |
