@@ -17,20 +17,20 @@ owners.
 
  Original tutorial pages                                                     
 
-| Part number                                                  | Topic        |
-| ------------------------------------------------------------ | ------------ |
-| [Part 1](http://www.ppa.pl/programy/kurs-mui-czesc-1.html)   | tba          |
-| [Part 2](http://www.ppa.pl/programy/kurs-mui-czesc-2.html)   | tba          |
-| [Part 3](http://www.ppa.pl/programy/kurs-mui-czesc-3.html)   | tba          |
-| [Part 4](http://www.ppa.pl/programy/kurs-mui-czesc-4.html)   | tba          |
-| [Part 5](http://www.ppa.pl/programy/kurs-mui-czesc-5.html)   | tba          |
-| [Part 6](http://www.ppa.pl/programy/kurs-mui-czesc-6.html)   | tba          |
-| [Part 7](http://www.ppa.pl/programy/kurs-mui-czesc-7.html)   | tba          |
-| [Part 8](http://www.ppa.pl/programy/kurs-mui-czesc-8.html)   | tba          |
-| [Part 9](http://www.ppa.pl/programy/kurs-mui-czesc-9.html)   | tba          |
-| [Part 10](http://www.ppa.pl/programy/kurs-mui-czesc-10.html) | tba          |
-| [Part 11](http://www.ppa.pl/programy/kurs-mui-czesc-11.html) | tba          |
-| [Part 12](http://www.ppa.pl/programy/kurs-mui-czesc-12.html) | tba          |
-| [Part 13](http://www.ppa.pl/programy/kurs-mui-czesc-13.html) | tba          |
-| [Part 14](http://www.ppa.pl/programy/kurs-mui-czesc-14.html) | tba          |
+| Part number                                                  | Topic        | Files         |
+| ------------------------------------------------------------ | ------------ | ------------- |
+| [Part 1](http://www.ppa.pl/programy/kurs-mui-czesc-1.html)   | tba          |               |
+| [Part 2](http://www.ppa.pl/programy/kurs-mui-czesc-2.html)   | tba          |               |
+| [Part 3](http://www.ppa.pl/programy/kurs-mui-czesc-3.html)   | tba          |               |
+| [Part 4](http://www.ppa.pl/programy/kurs-mui-czesc-4.html)   | tba          |               |
+| [Part 5](http://www.ppa.pl/programy/kurs-mui-czesc-5.html)   | tba          |               |
+| [Part 6](http://www.ppa.pl/programy/kurs-mui-czesc-6.html)   | tba          |               |
+| [Part 7](http://www.ppa.pl/programy/kurs-mui-czesc-7.html)   | tba          |               |
+| [Part 8](http://www.ppa.pl/programy/kurs-mui-czesc-8.html)   | tba          |               |
+| [Part 9](http://www.ppa.pl/programy/kurs-mui-czesc-9.html)   | tba          |               |
+| [Part 10](http://www.ppa.pl/programy/kurs-mui-czesc-10.html) | tba          |               |
+| [Part 11](http://www.ppa.pl/programy/kurs-mui-czesc-11.html) | tba          |               |
+| [Part 12](http://www.ppa.pl/programy/kurs-mui-czesc-12.html) | tba          |               |
+| [Part 13](http://www.ppa.pl/programy/kurs-mui-czesc-13.html) | tba          |               |
+| [Part 14](http://www.ppa.pl/programy/kurs-mui-czesc-14.html) | tba          |               |
 
