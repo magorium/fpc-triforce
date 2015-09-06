@@ -22,7 +22,7 @@ owners.
 | [Part 1](http://www.ppa.pl/programy/kurs-mui-czesc-1.html)   | **Basics**<br>Boopsi classes | scene: A Boopsi class example |
 | [Part 2](http://www.ppa.pl/programy/kurs-mui-czesc-2.html)   | **Basics**<br>From Boopsi to MUI | scene: Boopsi classes converted to MUI classes |
 | [Part 3](http://www.ppa.pl/programy/kurs-mui-czesc-3.html)   | **Basics**<br>Creating a GUI with MUI | scene: A GUI for the classes |
-| [Part 4](http://www.ppa.pl/programy/kurs-mui-czesc-4.html)   | tba          |               |
+| [Part 4](http://www.ppa.pl/programy/kurs-mui-czesc-4.html)   | **MUI-ishm**<br>Understanding the rules and flow of MUI| This part of the tutorial does not have accompanied source examples |
 | [Part 5](http://www.ppa.pl/programy/kurs-mui-czesc-5.html)   | tba          |               |
 | [Part 6](http://www.ppa.pl/programy/kurs-mui-czesc-6.html)   | tba          |               |
 | [Part 7](http://www.ppa.pl/programy/kurs-mui-czesc-7.html)   | tba          |               |
