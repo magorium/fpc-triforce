@@ -24,7 +24,7 @@ owners.
 | [Part 3](http://www.ppa.pl/programy/kurs-mui-czesc-3.html)   | **Basics**<br>Creating a GUI with MUI | scene: A GUI for the classes |
 | [Part 4](http://www.ppa.pl/programy/kurs-mui-czesc-4.html)   | **MUI-ishm**<br>Understanding the rules and flow of MUI| This part of the tutorial does not have accompanied source examples |
 | [Part 5](http://www.ppa.pl/programy/kurs-mui-czesc-5.html)   | **Notifications**<br>How to get noticed | notification: Using MUI notifications <br> notification_with_hooks: Using hooks for notification <br> odwracanka: Playing with hooks |
-| [Part 6](http://www.ppa.pl/programy/kurs-mui-czesc-6.html)   | tba          |               |
+| [Part 6](http://www.ppa.pl/programy/kurs-mui-czesc-6.html)   | **Common gadgets**<br>Common goods and their layout | example7a: |
 | [Part 7](http://www.ppa.pl/programy/kurs-mui-czesc-7.html)   | tba          |               |
 | [Part 8](http://www.ppa.pl/programy/kurs-mui-czesc-8.html)   | tba          |               |
 | [Part 9](http://www.ppa.pl/programy/kurs-mui-czesc-9.html)   | tba          |               |
