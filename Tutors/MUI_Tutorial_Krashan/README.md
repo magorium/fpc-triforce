@@ -26,7 +26,7 @@ owners.
 | [Part 5](http://www.ppa.pl/programy/kurs-mui-czesc-5.html)   | **Notifications**<br>How to get noticed | notification: Using MUI notifications <br> notification_with_hooks: Using hooks for notification <br> odwracanka: Playing with hooks |
 | [Part 6](http://www.ppa.pl/programy/kurs-mui-czesc-6.html)   | **Common gadgets**<br>Common goods and their layout | example7a: <br> example7b: <br> example7c: <br> example 7d: <br> example7e: |
 | [Part 7](http://www.ppa.pl/programy/kurs-mui-czesc-7.html)   | **More MUI gadgets**<br>Showing off more goodies | example8a: Cycle gadgets and Radio buttons (text styles, MUI images)<br>example8b: Patterns and RGB colours<br>example8c: MUI Brush<br>example8d: Graphics using datatypes |
-| [Part 8](http://www.ppa.pl/programy/kurs-mui-czesc-8.html)   | **MUI List(view)**<br> Using a list and its view | example9a: Display and insert data in a Listview |
+| [Part 8](http://www.ppa.pl/programy/kurs-mui-czesc-8.html)   | **MUI List(view)**<br> Using a list and its view | example9a: Display and insert data in a Listview<br>example9b: ListView and hooks |
 | [Part 9](http://www.ppa.pl/programy/kurs-mui-czesc-9.html)   | tba          |               |
 | [Part 10](http://www.ppa.pl/programy/kurs-mui-czesc-10.html) | tba          |               |
 | [Part 11](http://www.ppa.pl/programy/kurs-mui-czesc-11.html) | tba          |               |
