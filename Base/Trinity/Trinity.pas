@@ -4,6 +4,9 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-09-11  $ AROS + MorphOS: 
+//             $ - CreatePort(), DeletePort()
+//             $ - CreateExtIO(), DeleteExtIO()
 // 2015-09-01  $ Amiga + MorphOS OBJ_xxx macros
 // 2015-08-30  $ ExecAllocMem() for Amiga and AROS
 //             $ VFPrintf() overloads for Amiga and MorphOS.
@@ -384,6 +387,36 @@ Type
   function  OBJ_DefWidth    (obj : APTR) : LongWord;
   function  OBJ_DefHeight   (obj : APTR) : LongWord;
   function  OBJ_Flags       (obj : APTR) : LongWord;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: CreatePort(), DeletePort()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IF DEFINED(AROS) or DEFINED(MORPHOS)}
+  function  CreatePort(name: STRPTR; pri: LONG): pMsgPort;
+  procedure DeletePort (mp: pMsgPort);
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: CreateExtIO(), DeleteExtIO()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IF DEFINED(AROS) or DEFINED(MORPHOS)}
+  function  CreateExtIO(port: pMsgPort; iosize: ULONG): pIORequest;
+  procedure DeleteExtIO(ioreq: pIORequest);
   {$ENDIF}
 
 
@@ -963,6 +996,92 @@ end;
 function OBJ_Flags(obj : APTR) : LongWord;
 begin
   OBJ_Flags := MUIAreaData(obj)^.mad_Flags;
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: CreatePort(), DeletePort()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IF DEFINED(AROS) or DEFINED(MORPHOS)}
+function  CreatePort(name: STRPTR; pri: LONG): pMsgPort;
+Var
+  mp: pMsgPort;
+begin
+  mp := CreateMsgPort;
+
+  if (mp <> nil) then
+  begin
+    mp^.mp_Node.ln_Name := name;
+    mp^.mp_Node.ln_Pri  := pri;
+
+    if (name <> nil) 
+    then AddPort(mp);
+  end;
+  result := mp;
+end;
+
+
+procedure DeletePort (mp: pMsgPort);
+begin
+  if (mp^.mp_Node.ln_Name <> nil)
+  then RemPort(mp);
+
+  DeleteMsgPort (mp);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: CreateExtIO(), DeleteExtIO()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IF DEFINED(AROS) or DEFINED(MORPHOS)}
+function  CreateExtIO(port: pMsgPort; iosize: ULONG): pIORequest;
+var
+   ioreq: pIORequest;
+begin
+  ioreq := nil;
+
+  if (port <> nil) then
+  begin
+    ioreq := ExecAllocMem(iosize, MEMF_CLEAR or MEMF_PUBLIC);
+    if (ioreq <> nil) then
+    begin
+      //* Initialize the structure */
+      ioreq^.io_Message.mn_Node.ln_Type := NT_MESSAGE;
+      ioreq^.io_Message.mn_ReplyPort    := port;
+      ioreq^.io_Message.mn_Length       := iosize;
+    end;
+  end;
+  Result := ioreq;
+end;
+
+
+procedure DeleteExtIO(ioreq: pIORequest);
+begin
+  if (ioreq <> nil) then
+  begin
+    //* Erase some fields to enforce crashes */
+    ioreq^.io_Message.mn_Node.ln_Type := $FF;
+
+    ioreq^.io_Device := pDevice(-1);
+    ioreq^.io_Unit   := pUnit(-1);
+
+    //* Free the memory */
+    ExecFreeMem(ioreq, ioreq^.io_Message.mn_Length);
+  end;
 end;
 {$ENDIF}
 
