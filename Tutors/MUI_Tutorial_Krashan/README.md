@@ -28,7 +28,7 @@ owners.
 | [Part 7](http://www.ppa.pl/programy/kurs-mui-czesc-7.html)   | **More MUI gadgets**<br>Showing off more goodies | example8a: Cycle gadgets and Radio buttons (text styles, MUI images)<br>example8b: Patterns and RGB colours<br>example8c: MUI Brush<br>example8d: Graphics using datatypes |
 | [Part 8](http://www.ppa.pl/programy/kurs-mui-czesc-8.html)   | **MUI List(view)**<br> Using a list and its view | example9a: Display and insert data in a Listview<br>example9b: ListView and hooks<br>example9c: Using columns and sorting data |
 | [Part 9](http://www.ppa.pl/programy/kurs-mui-czesc-9.html)   | **More MUI List(view)**<br>Titles and a practical example | example10a: List title<br>example10b: Columns & titles<br>example10c: Displaying text files using a listview |
-| [Part 10](http://www.ppa.pl/programy/kurs-mui-czesc-10.html) | tba          |               |
+| [Part 10](http://www.ppa.pl/programy/kurs-mui-czesc-10.html) | **Taking control**<br>Modify an existing class | example11a: Modify Slider behaviour |
 | [Part 11](http://www.ppa.pl/programy/kurs-mui-czesc-11.html) | tba          |               |
 | [Part 12](http://www.ppa.pl/programy/kurs-mui-czesc-12.html) | tba          |               |
 | [Part 13](http://www.ppa.pl/programy/kurs-mui-czesc-13.html) | tba          |               |
