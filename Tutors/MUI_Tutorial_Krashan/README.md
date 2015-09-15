@@ -31,6 +31,6 @@ owners.
 | [Part 10](http://www.ppa.pl/programy/kurs-mui-czesc-10.html) | **Taking control**<br>Modify an existing class | example11a: Modify Slider behaviour |
 | [Part 11](http://www.ppa.pl/programy/kurs-mui-czesc-11.html) | **Forcing Control**<br>Subclassing an existing class | example12a: Subclass Area and 'point it' in the right direction |
 | [Part 12](http://www.ppa.pl/programy/kurs-mui-czesc-12.html) | **MUI and ARexx**<br>ARexx communication | example13a: Set and get RGB colorvalues with Arexx |
-| [Part 13](http://www.ppa.pl/programy/kurs-mui-czesc-13.html) | tba          |               |
+| [Part 13](http://www.ppa.pl/programy/kurs-mui-czesc-13.html) | **Subclassing**<br>Wave to the audience | example14a: Sampledata viewer |
 | [Part 14](http://www.ppa.pl/programy/kurs-mui-czesc-14.html) | tba          |               |
 
