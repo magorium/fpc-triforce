@@ -2,7 +2,7 @@
 FPC Sources for Krashan's MUI Tutorial
 ======================================
 
-The MUI tutorial is written by Grzegorz "Krashan" Kraszewski and is still 
+The MUI tutorial is written by [Grzegorz "Krashan" Kraszewski](http://github.com/grzegorz-kraszewski) and is still 
 available online (written in the Polish language).
 
 The tutorial comes accompanied with examples written in c-source.
