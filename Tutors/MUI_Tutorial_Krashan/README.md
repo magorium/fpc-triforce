@@ -30,7 +30,7 @@ owners.
 | [Part 9](http://www.ppa.pl/programy/kurs-mui-czesc-9.html)   | **More MUI List(view)**<br>Titles and a practical example | example10a: List title<br>example10b: Columns & titles<br>example10c: Displaying text files using a listview |
 | [Part 10](http://www.ppa.pl/programy/kurs-mui-czesc-10.html) | **Taking control**<br>Modify an existing class | example11a: Modify Slider behaviour |
 | [Part 11](http://www.ppa.pl/programy/kurs-mui-czesc-11.html) | **Forcing Control**<br>Subclassing an existing class | example12a: Subclass Area and 'point it' in the right direction |
-| [Part 12](http://www.ppa.pl/programy/kurs-mui-czesc-12.html) | **MUI and ARexx**<br>ARexx communication | example13a: Set and get RGB colorvalues with Arexx |
+| [Part 12](http://www.ppa.pl/programy/kurs-mui-czesc-12.html) | **MUI and ARexx**<br>ARexx communication | example13a: Set and get RGB colorvalues with ARexx |
 | [Part 13](http://www.ppa.pl/programy/kurs-mui-czesc-13.html) | **Subclassing**<br>Wave to the audience | example14a: Sampledata viewer |
 | [Part 14](http://www.ppa.pl/programy/kurs-mui-czesc-14.html) | **Subclassing Application**<br>Mastering dynamic windows | example15a: Complication with closing multiple windows<br>example15b: Use button to close subwindow<br>example15c: Use MUIM_Application_ReturnID to close subwindow<br>example15d: Introduce APPM_RemSubWindow message to close (multiple) subwindows<br>example15e: Opening and closing dynamic windows universally |
 
