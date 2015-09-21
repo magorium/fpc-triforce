@@ -4,6 +4,10 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-09-21  $ MorphOS TextLength, fix for string parameter being pShortint
+//             $ MorphOS, Text() -> GfxText() + string parameter, see above
+//             $ Amiga + AROS, structure TDateTime from AmigaDOS conflicts
+//               with TDateTime from Free Pascal
 // 2015-09-11  $ AROS + MorphOS: 
 //             $ - CreatePort(), DeletePort()
 //             $ - CreateExtIO(), DeleteExtIO()
@@ -46,7 +50,7 @@ interface
 Uses
   Exec, AmigaDOS, 
   {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
-  AGraphics,  // for the OBJ_xxx macro's
+  AGraphics,  // for the OBJ_xxx macro's and TextLenght()
   {$ENDIF}
   Intuition, Utility;
 
@@ -423,6 +427,55 @@ Type
 
 //////////////////////////////////////////////////////////////////////////////
 //
+//  Topic: MorphOS, TextLength()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  function  TextLength(rp: pRastPort location 'a1'; string1: STRPTR location 'a0'; count: CARDINAL location 'd0'): INTEGER; SysCall GfxBase 054;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: MorphOS, Text() -> GfxText() + string parameter
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  function  GfxText(rp: pRastPort location 'a1'; string1: STRPTR location 'a0'; count: CARDINAL location 'd0'): LongInt; SysCall GfxBase 060;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: TDateTime Structure + pointer
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IF DEFINED(AMIGA) or DEFINED(AROS)}
+type
+  _PDateTime = ^_TDateTime;
+  _TDateTime = packed record
+    dat_Stamp   : TDateStamp;
+    dat_Format  : Byte;
+    dat_Flags   : Byte;
+    dat_StrDay  : Pointer;
+    dat_StrDate : Pointer;
+    dat_StrTime : Pointer;
+end;
+{$ENDIF}
+
+//////////////////////////////////////////////////////////////////////////////
+//
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -434,7 +487,6 @@ Type
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
-
 
 
 implementation
