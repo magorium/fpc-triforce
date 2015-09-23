@@ -4,6 +4,8 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-09-22  $ MorphOS AllocDosObjectTags()
+//             $ MorphOS const ACTION_WRITE + ACTION_READ
 // 2015-09-21  $ MorphOS TextLength, fix for string parameter being pShortint
 //             $ MorphOS, Text() -> GfxText() + string parameter, see above
 //             $ Amiga + AROS, structure TDateTime from AmigaDOS conflicts
@@ -474,11 +476,35 @@ type
 end;
 {$ENDIF}
 
+
+
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Topic: 
+//  Topic: AllocDosObjectTags()
 //
 //////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  function AllocDosObjectTags(const Type_: LongWord; const Tags: array of LONG): APTR;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: MorphOS ACTION_READ and ACTION_WRITE
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF MORPHOS}
+const
+  ACTION_READ   = $52;
+  ACTION_WRITE  = $57;
+{$ENDIF}
 
 
 
@@ -487,6 +513,15 @@ end;
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: 
+//
+//////////////////////////////////////////////////////////////////////////////
+
 
 
 implementation
@@ -1135,6 +1170,23 @@ begin
     ExecFreeMem(ioreq, ioreq^.io_Message.mn_Length);
   end;
 end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: AllocDosObjectTags()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF MORPHOS}
+function AllocDosObjectTags(const Type_: LongWord; const Tags: array of LONG): APTR;
+begin
+  AllocDosObjectTags := AllocDosObject(Type_, @Tags[0]);
+end;  
 {$ENDIF}
 
 
