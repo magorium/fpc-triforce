@@ -4,6 +4,8 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-09-23  $ Amiga + AROS + MorphOS: ReadArgs()
+//             $ MorphOS: ReadPixelArray8() & WritePixelArray8()
 // 2015-09-22  $ MorphOS AllocDosObjectTags()
 //             $ MorphOS const ACTION_WRITE + ACTION_READ
 // 2015-09-21  $ MorphOS TextLength, fix for string parameter being pShortint
@@ -505,6 +507,41 @@ const
   ACTION_READ   = $52;
   ACTION_WRITE  = $57;
 {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: All ReadArgs()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  FUNCTION ReadArgs(const arg_template: STRPTR location 'd1'; var arra: LONGINT location 'd2'; args: pRDArgs location 'd3'): pRDArgs; syscall _DOSBase 798; overload;  
+  {$ENDIF}
+  {$IFDEF AROS}
+  function ReadArgs(const Template: STRPTR; Array_: PLONG; RdArgs: PRDArgs): PRDArgs; syscall AOS_DOSBase 133; overload;
+  {$ENDIF}
+  {$IFDEF MORPHOS}
+  function ReadArgs(const arg_template: STRPTR location 'd1'; array1: PLONG location 'd2'; args: PRDArgs location 'd3'): PRDArgs; SysCall MOS_DOSBase 798; overload;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: MorphOS ReadPixelArray8() & WritePixelArray8()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  function ReadPixelArray8 (rp: pRastPort location 'a0'; xstart: CARDINAL location 'd0'; ystart: CARDINAL location 'd1'; xstop: CARDINAL location 'd2'; ystop: CARDINAL location 'd3'; array1: pBYTE location 'a2'; temprp: pRastPort location 'a1'): LongInt; SysCall GfxBase 780; overload;
+  function WritePixelArray8(rp: pRastPort location 'a0'; xstart: CARDINAL location 'd0'; ystart: CARDINAL location 'd1'; xstop: CARDINAL location 'd2'; ystop: CARDINAL location 'd3'; array1: pBYTE location 'a2'; temprp: pRastPort location 'a1'): LongInt; SysCall GfxBase 786; overload;
+  {$ENDIF}
 
 
 
