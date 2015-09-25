@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-09-25  $ Fix: TDateTime, let original unit decide structure + size
 // 2015-09-23  $ Amiga + AROS + MorphOS: ReadArgs()
 //             $ MorphOS: ReadPixelArray8() & WritePixelArray8()
 // 2015-09-22  $ MorphOS AllocDosObjectTags()
@@ -468,14 +469,7 @@ Type
 {$IF DEFINED(AMIGA) or DEFINED(AROS)}
 type
   _PDateTime = ^_TDateTime;
-  _TDateTime = packed record
-    dat_Stamp   : TDateStamp;
-    dat_Format  : Byte;
-    dat_Flags   : Byte;
-    dat_StrDay  : Pointer;
-    dat_StrDate : Pointer;
-    dat_StrTime : Pointer;
-end;
+  _TDateTime = AmigaDOS.TDateTime; 
 {$ENDIF}
 
 
