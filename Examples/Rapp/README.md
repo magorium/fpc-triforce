@@ -15,4 +15,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | Name                | Category     | Description                                           |
 | ------------------- | ------------ | ----------------------------------------------------- |
 | uhr                 | Timer        | A simple digital clock as an example for timer.device |
-
+| clock               | Timer        | Another digital clock as an example for timer.device  |
