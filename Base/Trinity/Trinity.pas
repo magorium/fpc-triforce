@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2016-09-26  $ all: FPrintf()
 // 2015-09-25  $ Fix: TDateTime, let original unit decide structure + size
 // 2015-09-23  $ Amiga + AROS + MorphOS: ReadArgs()
 //             $ MorphOS: ReadPixelArray8() & WritePixelArray8()
@@ -535,6 +536,24 @@ const
   {$IFDEF MORPHOS}
   function ReadPixelArray8 (rp: pRastPort location 'a0'; xstart: CARDINAL location 'd0'; ystart: CARDINAL location 'd1'; xstop: CARDINAL location 'd2'; ystop: CARDINAL location 'd3'; array1: pBYTE location 'a2'; temprp: pRastPort location 'a1'): LongInt; SysCall GfxBase 780; overload;
   function WritePixelArray8(rp: pRastPort location 'a0'; xstart: CARDINAL location 'd0'; ystart: CARDINAL location 'd1'; xstop: CARDINAL location 'd2'; ystop: CARDINAL location 'd3'; array1: pBYTE location 'a2'; temprp: pRastPort location 'a1'): LongInt; SysCall GfxBase 786; overload;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: FPrintf()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  function FPrintf(fh: BPTR; fmt: STRPTR): LONG; overload; inline;
+  {$IFDEF AROS}
+  function FPrintf(fh: BPTR; fmt: STRPTR; argsarray: array of IPTR): LONG; overload; inline;
+  {$ENDIF}
+  {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+  function FPrintf(fh: BPTR; fmt: STRPTR; argsarray: array of NativeUInt): LONG; overload; inline;
   {$ENDIF}
 
 
@@ -1219,6 +1238,31 @@ begin
   AllocDosObjectTags := AllocDosObject(Type_, @Tags[0]);
 end;  
 {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: FPrintf()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+function FPrintf(fh: BPTR; fmt: STRPTR): LONG;
+begin
+  Result := VFPrintf(fh, fmt, nil);
+end;
+
+{$IFDEF AROS}
+function FPrintf(fh: BPTR; fmt: STRPTR; argsarray: array of IPTR): LONG;
+{$ENDIF}
+{$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+function FPrintf(fh: BPTR; fmt: STRPTR; argsarray: array of NativeUInt): LONG;
+{$ENDIF}
+begin
+  Result := VFPrintf(fh, fmt, @argsarray[0]);
+end;
 
 
 
