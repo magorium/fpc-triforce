@@ -4,7 +4,12 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
-// 2016-09-26  $ all: FPrintf()
+// 2015-09-27  $ MorphOS: ObtainBestPen()
+//             $ Amiga + MorphOS: PolyDraw()
+//             $ Amiga + MorphOS: macro RASSIZE
+//             $ Amiga + MorphOS: MIDDLEUP and MIDDLEDOWN consts
+//             $ All: EasyRequest()
+// 2015-09-26  $ all: FPrintf()
 // 2015-09-25  $ Fix: TDateTime, let original unit decide structure + size
 // 2015-09-23  $ Amiga + AROS + MorphOS: ReadArgs()
 //             $ MorphOS: ReadPixelArray8() & WritePixelArray8()
@@ -57,6 +62,7 @@ Uses
   Exec, AmigaDOS, 
   {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
   AGraphics,  // for the OBJ_xxx macro's and TextLenght()
+  InputEvent, // For IECODE_MBUTTON to aid MIDDLEDOWN & MIDDLEUP consts
   {$ENDIF}
   Intuition, Utility;
 
@@ -554,6 +560,89 @@ const
   {$ENDIF}
   {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
   function FPrintf(fh: BPTR; fmt: STRPTR; argsarray: array of NativeUInt): LONG; overload; inline;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: ObtainBestPne()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  function  ObtainBestPen(cm: pColorMap; R: ULONG; G: ULONG; B: ULONG; taglist: array of DWord): LONG; Inline;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: PolyDraw()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  procedure PolyDraw(rp: pRastPort location 'a1'; count: LongInt location 'd0'; const polyTable: pSmallInt location 'a0'); syscall GfxBase 336;
+  {$ENDIF}
+  {$IFDEF MORPHOS}
+  procedure PolyDraw(rp: pRastPort location 'a1'; count: LongInt location 'd0'; polyTable: PSmallInt location 'a0'); SysCall GfxBase 336;
+  {$ENDIF}
+  
+  
+  
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: macor RASSIZE
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+  function  RasSize(w, h: Word): Integer; inline;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: constants MIDDLEUP and MIDDLEDOWN
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+Const
+  MIDDLEDOWN = IECODE_MBUTTON;
+  MIDDLEUP   = IECODE_MBUTTON or IECODE_UP_PREFIX;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: EasyRequest()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  function EasyRequest(Window: PWindow; EasyStruct: PEasyStruct; IDCMP_Ptr: PULONG; const tagList: array of const): LONG;
+  {$ENDIF}
+
+  {$IFDEF MORPHOS}
+  function EasyRequest(Window: PWindow; EasyStruct: PEasyStruct; IDCMP_Ptr: PULONG; tagList: array of ULONG): LONG;
+  {$ENDIF}
+
+  {$IFDEF HASAMIGA}
+  function EasyRequest(Window: PWindow; EasyStruct: PEasyStruct; IDCMP_Ptr: PULONG): LONG; overload;
   {$ENDIF}
 
 
@@ -1263,6 +1352,71 @@ function FPrintf(fh: BPTR; fmt: STRPTR; argsarray: array of NativeUInt): LONG;
 begin
   Result := VFPrintf(fh, fmt, @argsarray[0]);
 end;
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: ObtainBestPne()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF MORPHOS}
+function  ObtainBestPen(cm: pColorMap; R: ULONG; G: ULONG; B: ULONG; taglist: array of DWord): LONG;
+begin
+  ObtainBestPen := ObtainBestPenA(cm, R, G, B, @taglist);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: macro RASSIZE
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+function RasSize(w, h: Word): Integer;
+begin
+  Result := h * (((w + 15) shr 3) and $FFFE);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: EasyRequest()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AMIGA}
+function EasyRequest(Window: PWindow; EasyStruct: PEasyStruct; IDCMP_Ptr: PULONG; const tagList: array of const): LONG;
+begin
+  EasyRequest := EasyRequestArgs(Window, EasyStruct, IDCMP_Ptr, Readintags(tagList));
+end;
+{$ENDIF}
+
+{$IFDEF MORPHOS}
+function EasyRequest(Window: PWindow; EasyStruct: PEasyStruct; IDCMP_Ptr: PULONG; tagList: array of ULONG): LONG;
+begin
+  EasyRequest := EasyRequestArgs(Window, EasyStruct, IDCMP_Ptr, @tagList);
+end;
+{$ENDIF}
+
+{$IFDEF HASAMIGA}
+function EasyRequest(Window: PWindow; EasyStruct: PEasyStruct; IDCMP_Ptr: PULONG): LONG;
+begin
+  EasyRequest := EasyRequestArgs(Window, EasyStruct, IDCMP_Ptr, nil);
+end;
+{$ENDIF}
 
 
 
