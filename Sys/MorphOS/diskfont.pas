@@ -4,6 +4,7 @@ unit diskfont;
 // unit diskfont for morphos
 
 
+{$UNITPATH ../Trinity/}
 {$PACKRECORDS 2}
 
 
@@ -11,7 +12,7 @@ interface
 
 
 uses
-  Exec, AGraphics;
+  TriniTypes, Exec, AGraphics;
 
 
 const
@@ -60,7 +61,7 @@ type
     dfh_DF          : TNode;
     dfh_FileID      : UWORD;
     dfh_Revision    : UWORD;
-    dfh_Segment     : LONG;
+    dfh_Segment     : SLONG;
     dfh_Name        : packed array [0..MAXFONTNAME-1] of char;
     dfh_TF          : TTextFont;
   end;
@@ -110,12 +111,12 @@ var
 
 
   function  OpenDiskFont(textAttr: pTextAttr location 'a0'): pTextFont; syscall DiskfontBase 030;
-  function  AvailFonts(buffer: STRPTR location 'a0'; bufBytes: LONG location 'd0'; flags: LONG location 'd1'): LONG; syscall DiskfontBase 036;
+  function  AvailFonts(buffer: STRPTR location 'a0'; bufBytes: SLONG location 'd0'; flags: SLONG location 'd1'): SLONG; syscall DiskfontBase 036;
   function  NewFontContents(fontsLock: BPTR location 'a0'; fontName: STRPTR location 'a1'): pFontContentsHeader; syscall DiskfontBase 042;
   procedure DisposeFontContents(fontContentsHeader: pFontContentsHeader location 'a1'); syscall DiskfontBase 048;
   function  NewScaledDiskFont(sourceFont: pTextFont location 'a0'; destTextAttr: pTextAttr location 'a1'): pDiskFontHeader; syscall DiskfontBase 054;
   //*** V45 ***/
-  function  GetDiskFontCtrl(tagid: LONG location 'd0'): LONG; syscall DiskfontBase 060;
+  function  GetDiskFontCtrl(tagid: SLONG location 'd0'): SLONG; syscall DiskfontBase 060;
   procedure SetDiskFontCtrlA(taglist: pTagItem location 'a0'); syscall DiskfontBase 066;
 
   // Varargs version
