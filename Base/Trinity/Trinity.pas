@@ -4,6 +4,9 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-10-04  $ AROS: ASL functions
+//             $ Amiga: AslRequest(), RequestFile()
+//             $ Amiga: FPuts()
 // 2015-09-27  $ MorphOS: ObtainBestPen()
 //             $ Amiga + MorphOS: PolyDraw()
 //             $ Amiga + MorphOS: macro RASSIZE
@@ -63,6 +66,9 @@ Uses
   {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
   AGraphics,  // for the OBJ_xxx macro's and TextLenght()
   InputEvent, // For IECODE_MBUTTON to aid MIDDLEDOWN & MIDDLEUP consts
+  {$ENDIF}
+  {$IF DEFINED(AMIGA) or DEFINED(AROS)}
+  asl,
   {$ENDIF}
   Intuition, Utility;
 
@@ -649,6 +655,50 @@ Const
 
 //////////////////////////////////////////////////////////////////////////////
 //
+//  Topic: Asl functions
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+  {$IFDEF AMIGA}
+  function  RequestFile(fileReq: pFileRequester location 'a0'): LongBool;                           syscall AslBase 042;  // Obsolete, use AslRequest
+  function  AslRequest(requester: APTR location 'a0'; tagList: pTagItem location 'a1'): LongBool;   syscall AslBase 060;
+  {$ENDIF}
+  {$IFDEF AROS}  // i was lazy and simply overuled them all.
+  function  AllocFileRequest: PFileRequester;                         syscall AslBase 5;  // Obsolete, use AllocAslRequest
+  procedure FreeFileRequest(FileReq: PFileRequester);                 syscall AslBase 6;  // Obsolete, use FreeAslRequest
+  function  RequestFile(FileReq: PFileRequester): LongBool;           syscall AslBase 7;  // Obsolete, use AslRequest
+  function  AllocAslRequest(ReqType: ULONG; tagList: PTagItem): APTR; syscall AslBase 8;
+  procedure FreeAslRequest(Requester: APTR);                          syscall AslBase 9;
+  function  AslRequest(Requester: APTR; tagList: PTagItem): LongBool; syscall AslBase 10;
+  procedure AbortAslRequest(Requester: APTR);                         syscall AslBase 13;
+  procedure ActivateAslRequest(Requester:APTR);                       syscall AslBase 14;
+  // varargs versions
+  function  AllocAslRequestTags(ReqType: ULONG; const Tags: array of const): APTR;
+  {$ENDIF}
+  {$IF DEFINED(AMIGA) or DEFINED(AROS)}
+  function  AslRequestTags(Requester: APTR; const Tags: array of const): LongBool;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: FPuts()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  function  FPuts(fh: BPTR location 'd1'; const str: STRPTR location 'd2'): LONG; syscall _DOSBase 342;
+  function  FPuts(fh: BPTR; const str: string): LONG;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -674,6 +724,11 @@ Uses
 {$IFDEF MORPHOS}
 Uses
   AmigaLib, MUI;
+{$ENDIF}
+
+{$IFDEF AROS}
+Uses
+  tagsarray;
 {$ENDIF}
 
 
@@ -1415,6 +1470,57 @@ end;
 function EasyRequest(Window: PWindow; EasyStruct: PEasyStruct; IDCMP_Ptr: PULONG): LONG;
 begin
   EasyRequest := EasyRequestArgs(Window, EasyStruct, IDCMP_Ptr, nil);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: AllocAslRequestTags
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AROS}
+function  AllocAslRequestTags(reqType: ULONG; Const tags: Array of const): APTR;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  AllocAslRequestTags := AllocAslRequest(reqType, GetTagPtr(TagList));
+end;
+{$ENDIF}
+
+{$IF DEFINED(AMIGA) or DEFINED(AROS)}
+function  AslRequestTags(Requester: APTR; const Tags: array of const): LongBool;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  AslRequestTags := AslRequest(Requester, GetTagPtr(TagList));
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: FPuts()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AMIGA}
+function  FPuts(fh: BPTR; const str: string): LONG;
+begin
+  FPuts := FPuts(fh, PChar(RawByteString(str)));
 end;
 {$ENDIF}
 
