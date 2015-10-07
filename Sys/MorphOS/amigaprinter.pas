@@ -5,6 +5,13 @@ unit amigaprinter;
   printer device 
 }
 
+
+{$MODE OBJFPC}{$H+}{.$HINTS ON}
+
+{$IFDEF AMIGA}   {$PACKRECORDS 2} {$ENDIF}
+{$IFDEF AROS}    {$PACKRECORDS C} {$ENDIF}
+{$IFDEF MORPHOS} {$PACKRECORDS 2} {$ENDIF}
+
 {$UNITPATH ../Trinity/}
 
 
