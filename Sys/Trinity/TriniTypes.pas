@@ -14,6 +14,8 @@ Type
   ULONG             = LongWord;
   SLONG             = LongInt;
 
+  LBOOL             = LongBool;
+
 
   PUBYTE            = ^UBYTE;
   PSBYTE            = ^SBYTE;
@@ -35,6 +37,8 @@ Type
   PSIPTR            = ^SIPTR;
 
   STRPTR            = PChar;
+  PSTRPTR           = ^STRPTR;
+
 
 
 implementation
