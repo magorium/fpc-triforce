@@ -14,6 +14,7 @@ Type
   ULONG             = LongWord;
   SLONG             = LongInt;
 
+  WBOOL             = WordBool;
   LBOOL             = LongBool;
 
 
