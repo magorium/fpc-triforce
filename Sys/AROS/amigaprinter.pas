@@ -167,7 +167,7 @@ Type
     io_RastPort     : PRastPort;    // (RastPortPtr) raster port
     io_ColorMap     : PColorMap;    // (ColorMapPtr) color map
     {$IFDEF AROS}
-    io_Modes        : IPTR;         //* Holds a pointer for TurboPrint extensions */
+    io_Modes        : UIPTR;        //* Holds a pointer for TurboPrint extensions */
     {$ELSE}
     io_Modes        : ULONG;
     {$ENDIF}
