@@ -12,10 +12,11 @@ Where applicable, German comments and names have been translated into English.
 Note that these examples are copyrighted :copyright: by their respective owners.
 
 
-| Name                | Category     | Description                                                     |
-| ------------------- | ------------ | --------------------------------------------------------------- |
-| multi               | Task         | An example for multitasking                                     |
-| multi1              | Task         | Multitasking example: Process a task in the background          |
-| multi2              | Task         | Multitasking example: Background task sending progress messages |
-| uhr                 | Timer        | A simple digital clock as an example for timer.device           |
-| clock               | Timer        | Another digital clock as an example for timer.device            |
+| Name                | Category     | Description                                                            |
+| ------------------- | ------------ | ---------------------------------------------------------------------- |
+| multi               | Task         | An example for multitasking                                            |
+| multi1              | Task         | Multitasking example: Process a task in the background                 |
+| multi2              | Task         | Multitasking example: Background task sending progress messages        |
+| multi3              | Task         | Multitasking example: Background task waiting for commands and replies |
+| uhr                 | Timer        | A simple digital clock as an example for timer.device                  |
+| clock               | Timer        | Another digital clock as an example for timer.device                   |
