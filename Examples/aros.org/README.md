@@ -1,0 +1,15 @@
+
+FPC Sources for AROS' examples
+==============================
+
+These examples were originally written in c by The AROS Development Team and are available [here](http://www.aros.org/documentation/developers/samples.php).
+
+Here you can find those examples, rewritten for Free Pascal and compilable
+for Amiga, AROS and MorphOS (using [Trinity](https://github.com/magorium/fpc-triforce/tree/master/Base/Trinity)).
+
+Note that these examples are copyrighted :copyright: by their respective owners.
+
+
+| Name                | Category     | Description                                                            |
+| ------------------- | ------------ | ---------------------------------------------------------------------- |
+| helloworld          | Introduction | Prints some text to standard output                                    |
