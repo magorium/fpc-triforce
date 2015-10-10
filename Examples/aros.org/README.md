@@ -13,3 +13,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | Name                | Category     | Description                                                            |
 | ------------------- | ------------ | ---------------------------------------------------------------------- |
 | helloworld          | Introduction | Prints some text to standard output                                    |
+| graphics_simple     | Graphics     | Some simple drawing functions                                          |
