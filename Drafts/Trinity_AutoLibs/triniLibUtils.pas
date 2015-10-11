@@ -11,8 +11,36 @@ Uses
   Exec;
 
 
+  {
+    Procedure AutoInitLib
+    =======================================================================
+    This routine is to be called upon unit initialization of a shared 
+    system library.
+    
+    In order for this implementation to work, every library is obligated to
+    'initialize' itself by calling this routine. Options allows you tell 
+    which actual action to take.
+
+    Parameters:
+    LibName     Pointer to the name of the (disk)library
+    LibBase     Ponter to the variable that stores the (opened) library 
+                base.
+    Version     The version number of the library to open, see System SDK
+    Forced      A boolean value that allows you to force to open the 
+                library directly upon call to this function.
+    =======================================================================
+  }
+
   Procedure AutoInitLib(LibName: PChar; LibBase: Pointer; Version: ULONG; Forced: boolean);
+
+  {
+    TODO: missing documentation
+  }
   Procedure ForceAutoInit;
+
+  {
+    temp routine for showing status, can be removed.
+  }
   Procedure ShowStatus;
 
 
@@ -35,14 +63,40 @@ Type
 
 
 Var
+  {
+    The library list that holds all entries during duration of the program.
+  }
   AutoInitList              : Array of TAutoLibraryEntry;
   
+  {
+    Variable AutoFailure
+    =======================================================================
+    The idea is/was to use this value in order to indicate failure along the
+    way of auto init initialization, in order to remove the halt. 
+    Somehow i managed to forget how i wanted to implement that exactly.
+    =======================================================================
+  }
   AutoFailure               : boolean = false;
+
+  {
+    Variable MasterStatus_ForcedOpen
+    =======================================================================
+    This value is a boolean value that is false by default.
+
+    The moment this variable turns true, libraries will directly be opened 
+    automatically, otherwise not.
+    
+    The value of this variable should not be changed manually by the user, 
+    instead only a certain (internal) routine call should change it.
+    =======================================================================
+  }
   MasterStatus_ForcedOpen   : boolean = false;
 
 
 
-
+{
+  ShowStatus() - Show all the entries from the current library list
+}
 Procedure ShowStatus;
 Var
   i: Integer;
@@ -61,6 +115,7 @@ begin
     WriteStr(T3, AutoInitList[i].Library_Version);
     WriteStr(T4, AutoInitList[i].ForcedOpen);
     WriteStr(T5, AutoInitList[i].IsOpen);
+
     WriteStr(U, S:4, T1:20, T2:10, T3:4, T4:7, T5:7);
     //Writeln(U);
     DebugLn(U);
@@ -71,6 +126,11 @@ end;
 
 
 
+{
+  AddLibEntry() - Add a library entry to the list
+  
+  TODO: add more detailed description
+}
 Function AddLibEntry(LibName: PChar; LibBase: Pointer; Version: ULONG; Forced: Boolean): Integer;
 Var
   CurrentIndex : Integer;
@@ -94,6 +154,23 @@ end;
 
 
 
+{
+  OpenLibEntry() - Open a library based on it index that's in the list 
+
+  This routine uses the given EntryIndex to retrieve the individual and 
+  corresponding library data as stored in the list.
+
+  If the library is not already opened, it will attempt to open the library 
+  and will update the library data in the list correspondingly. In that case
+  the routine will return a true for success. If this opening failed then 
+  it's at this point uncertain what will happen, but the code shown
+  below will halt the program as well as let the routine return a false as
+  result value (if it ever reached this part of the code).
+  
+  In case the library entries in the list indicates that the library was 
+  already opened, this routine will silently exit the routine, returning
+  a true status.
+}
 Function OpenLibEntry(EntryIndex: Integer): Boolean;
 Var
   ThisBase : Pointer;
@@ -143,6 +220,11 @@ end;
 
 
 
+{
+  CloseLibEntry() - Close a library from the list of library entries.
+  
+  TODO: add more detailed description
+}
 procedure CloseLibEntry(EntryIndex: Integer);
 begin
   DebugLn('triniLibUtils - enter - CloseLibEntry()');
@@ -161,6 +243,16 @@ end;
 
 
 
+{
+  AutoinitLib() - Auto initialize a library based on the given parameters
+
+  Depending on the status of the passed forced parameter (all or not in 
+  combination with the global overuling master forced status) the given
+  library parameters will be stored (added) to the library list.
+  
+  In case the library is forced to open, the library will also be opened
+  and all related required information will be stored properly.
+}
 Procedure AutoInitLib(LibName: PChar; LibBase: Pointer; Version: ULONG; Forced: boolean);
 Var
   CIndex: Integer;
@@ -178,6 +270,18 @@ end;
 
 
 
+{
+  AutoCloseLibs() - Close all libraries marked as openeed in the list.
+
+  This is a 'panic' routine that will be called upon a FPC RTL call to 
+  ExitProc.
+  
+  It walks the library list and all libraries marked as opened will be
+  closed (in down-top order) automatically.
+  
+  The library list will be cleared on exiting this routine, so that
+  allocated resources are returned back to the system.
+}
 Procedure AutoCloseLibs;
 var
   i : Integer;
@@ -197,6 +301,17 @@ end;
 
 
 
+{
+  ForceAutoInit() - Forces to open the libraries.
+  
+  This routine will change the MasterStatus_ForcedOpen value from False to 
+  true, which indicates that from now on, each call to autoinitlib will 
+  actually open the library, even when not (manually) forced to open.
+  
+  All the already existing libraries in the list that are not already opened,
+  will be opened as well, changing the IsOpen status from false to true in
+  case an individual library was opened sucessfully.
+}
 Procedure ForceAutoInit;
 var
   i : Integer;
