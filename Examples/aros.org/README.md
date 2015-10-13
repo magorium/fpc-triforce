@@ -15,3 +15,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | helloworld          | Introduction | Prints some text to standard output                                    |
 | graphics_simple     | Graphics     | Some simple drawing functions                                          |
 | graphics_bitmap     | Graphics     | Creates a bitmap, draws in it and blits its content to a window        |
+| graphics_area       | Graphics     | Renders some shapes with the area functions                            |
