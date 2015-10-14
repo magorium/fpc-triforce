@@ -35,12 +35,12 @@ program multi3;
   Conversion to Free Pascal and translation was done by Magorium in 2015, 
   with kind permission from Thomas Rapp to be able to publish.
 
-  ===========================================================================  
+  ===========================================================================
 
-        Unless otherwise noted, you must consider these examples to be 
+           Unless otherwise noted, these examples must be considered
                  copyrighted by their respective owner(s)
 
-  ===========================================================================  
+  ===========================================================================
 }
 
 

@@ -46,12 +46,12 @@ program example10c;
   Conversion to Free Pascal was done by Magorium in 2015, with kind permission 
   from Krashan to be able to publish.
 
-  ===========================================================================  
+  ===========================================================================
 
-       Unless otherwise noted, you should consider these examples to be 
-                 copyrighted by their respective owners
+           Unless otherwise noted, these examples must be considered
+                 copyrighted by their respective owner(s)
 
-  ===========================================================================  
+  ===========================================================================
 }
 
 Uses
