@@ -4,6 +4,8 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-10-16  $ AROS: ReadLink()
+// 2015-10-08  $ AROS + MORPHOS: PrintF()
 // 2015-10-04  $ AROS: ASL functions
 //             $ Amiga: AslRequest(), RequestFile()
 //             $ Amiga: FPuts()
@@ -693,6 +695,37 @@ Const
   {$IFDEF AMIGA}
   function  FPuts(fh: BPTR location 'd1'; const str: STRPTR location 'd2'): LONG; syscall _DOSBase 342;
   function  FPuts(fh: BPTR; const str: string): LONG;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: Printf()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AROS}
+  function Printf(fmt: STRPTR; Argv: array of LONG): LONG;
+  {$ENDIF}
+  {$IFDEF MORPHOS}
+  function Printf(fmt: STRPTR; Argv: array of LONG): LONG;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: ReadLink()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AROS}
+  function  ReadLink(Port: PMsgPort; Lock: BPTR; const Path: STRPTR; Buffer: STRPTR; Size: LongWord): LongInt; syscall AOS_DOSBase 73;
   {$ENDIF}
 
 
@@ -1521,6 +1554,29 @@ end;
 function  FPuts(fh: BPTR; const str: string): LONG;
 begin
   FPuts := FPuts(fh, PChar(RawByteString(str)));
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: Printf()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AROS}
+function Printf(fmt: STRPTR; Argv: array of LONG): LONG;
+begin
+  Printf := VPrintf(fmt, IPTR(Argv[0]));
+end;
+{$ENDIF}
+{$IFDEF MORPHOS}
+function Printf(fmt: STRPTR; Argv: array of LONG): LONG;
+begin
+  Printf := VPrintf(fmt, @Argv);
 end;
 {$ENDIF}
 
