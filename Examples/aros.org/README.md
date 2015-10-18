@@ -18,3 +18,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | graphics_area       | Graphics     | Renders some shapes with the area functions                            |
 | graphics_font       | Graphics     | Opens a font and writes some text                                      |
 | intuition_events    | Intuition    | Event handling                                                         |
+| intuition_refresh   | Intuition    | Examine difference between simplerefresh and smartrefresh windows      |
