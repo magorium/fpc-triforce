@@ -19,3 +19,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | graphics_font       | Graphics     | Opens a font and writes some text                                      |
 | intuition_events    | Intuition    | Event handling                                                         |
 | intuition_refresh   | Intuition    | Examine difference between simplerefresh and smartrefresh windows      |
+| intuition_appscreen | Intuition    | Opens a screen for applications                                        |
