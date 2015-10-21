@@ -21,3 +21,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | intuition_refresh      | Intuition    | Examine difference between simplerefresh and smartrefresh windows      |
 | intuition_appscreen    | Intuition    | Opens a screen for applications                                        |
 | intuition_customscreen | Intuition    | Opens a screen with a backdrop window                                  |
+| intuition_easyreq      | Intuition    | Demonstrates EasyRequesters                                            |
