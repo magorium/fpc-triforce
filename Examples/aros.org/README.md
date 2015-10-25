@@ -25,3 +25,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | asl_asl                | ASL          | File-, Font- and Screenmoderequester                                   |
 | dos_file               | DOS          | Reads a file and writes content to another file                        |
 | dos_readargs           | DOS          | Command line parsing with ReadArgs()                                   |
+| dos_readargs_help      | DOS          | ReadArgs() with help text                                              |
