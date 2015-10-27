@@ -932,9 +932,10 @@ end;
 {$ENDIF}
 
 
-
+{$IF DEFINED(AROS) or DEFINED(AMIGA)}
 Initialization
   WorkbenchBase := OpenLibrary(WORKBENCHNAME,0);
 Finalization
   CloseLibrary(WorkbenchBase);
+{$ENDIF}
 end.
