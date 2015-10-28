@@ -26,3 +26,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | dos_file               | DOS          | Reads a file and writes content to another file                        |
 | dos_readargs           | DOS          | Command line parsing with ReadArgs()                                   |
 | dos_readargs_help      | DOS          | ReadArgs() with help text                                              |
+| icon_start             | Icon         | Reads ToolTypes from icons                                             |
