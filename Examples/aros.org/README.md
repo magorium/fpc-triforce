@@ -27,3 +27,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | dos_readargs           | DOS          | Command line parsing with ReadArgs()                                   |
 | dos_readargs_help      | DOS          | ReadArgs() with help text                                              |
 | icon_start             | Icon         | Reads ToolTypes from icons                                             |
+| icon_change            | Icon         | Shows how to change ToolTypes                                          |
