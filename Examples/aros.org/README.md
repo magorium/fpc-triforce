@@ -22,7 +22,7 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | [:link:](http://www.aros.org/documentation/developers/samplecode/intuition_appscreen.c)    |     | intuition_appscreen    | Intuition    | Opens a screen for applications                                   |
 | [:link:](http://www.aros.org/documentation/developers/samplecode/intuition_customscreen.c) |     | intuition_customscreen | Intuition    | Opens a screen with a backdrop window                             |
 | [:link:](http://www.aros.org/documentation/developers/samplecode/intuition_easyreq.c)      |     | intuition_easyreq      | Intuition    | Demonstrates EasyRequesters                                       |
-| [:link:](http://www.aros.org/documentation/developers/samplecode/asl_asl.c)                |     | asl_asl                | ASL          | File-, Font- and Screenmoderequester                              |
+| [:link:](http://www.aros.org/documentation/developers/samplecode/asl.c)                    |     | asl_asl                | ASL          | File-, Font- and Screenmoderequester                              |
 | [:link:](http://www.aros.org/documentation/developers/samplecode/dos_file.c)               |     | dos_file               | DOS          | Reads a file and writes content to another file                   |
 | [:link:](http://www.aros.org/documentation/developers/samplecode/dos_readargs.c)           |     | dos_readargs           | DOS          | Command line parsing with ReadArgs()                              |
 | [:link:](http://www.aros.org/documentation/developers/samplecode/dos_readargs_help.c)      |     | dos_readargs_help      | DOS          | ReadArgs() with help text                                         |
