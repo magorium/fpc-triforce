@@ -10,7 +10,7 @@ for Amiga, AROS and MorphOS (using [Trinity](https://github.com/magorium/fpc-tri
 Note that these examples are copyrighted :copyright: by their respective owners.
 
 
-|   |   | Name                   | Category     | Description                                                       |
+| C | P | Name                   | Category     | Description                                                       |
 | - | - | ---------------------- | ------------ | ----------------------------------------------------------------- |
 | [:link:](http://www.aros.org/documentation/developers/samplecode/helloworld.c) | [:link:](./01_Introduction/helloworld.pas) | helloworld             | Introduction | Prints some text to standard output                               |
 |   |   | graphics_simple        | Graphics     | Some simple drawing functions                                     |
