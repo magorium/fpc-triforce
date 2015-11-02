@@ -22,6 +22,6 @@ If you are new to the Amiga, AROS and/or MorphOS targets, then please feel free 
 | Tutors           | Example code belonging to (3th party) tutorials targetting our supported targets                                    |
 | PubTitles        | More (3th party) examples, based on (official) existing publications (those things with covers and paper pages)     |
 
-The current status of Trinity can be read on ALB42's Free Pascal wiki website on the [Trinity in Trouble page]((http://fpcaroswiki.alb42.de/index.php?title=Trinity_in_Trouble).
+The current status of Trinity can be read on ALB42's Free Pascal wiki website on the [Trinity in Trouble page](http://fpcaroswiki.alb42.de/index.php?title=Trinity_in_Trouble).
 
 Please enjoy!
