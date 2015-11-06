@@ -21,3 +21,4 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | uhr                 | Timer        | A simple digital clock as an example for timer.device                  |
 | clock               | Timer        | Another digital clock as an example for timer.device                   |
 | async               | Device       | Asynchronous access to the shell window                                |
+| ListLinks           | Device       | Display list of links from a directory                                 |
