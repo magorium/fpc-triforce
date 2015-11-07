@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-11-06  $ MorphOS: NewList()
 // 2015-10-16  $ AROS: ReadLink()
 // 2015-10-08  $ AROS + MORPHOS: PrintF()
 // 2015-10-04  $ AROS: ASL functions
@@ -732,7 +733,21 @@ Const
 
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Topic: 
+//  Topic: NewList()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  procedure NewList(list: pList);
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic:
 //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -1577,6 +1592,28 @@ end;
 function Printf(fmt: STRPTR; Argv: array of LONG): LONG;
 begin
   Printf := VPrintf(fmt, @Argv);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: NewList()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF MORPHOS}
+procedure NewList(List: PList); inline;
+begin
+  if Assigned(List) then
+  begin
+    List^.lh_TailPred := PNode(List);
+    List^.lh_Tail := nil;
+    List^.lh_Head := @List^.lh_Tail;
+  end;
 end;
 {$ENDIF}
 
