@@ -4,6 +4,9 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-11-10  $ Amiga: DoDTMethod()
+//             $ MorphOS: NewDTObject(), DoDTMethod(), GetDTAttrs(), 
+//               DisposeDTObject()
 // 2015-11-06  $ MorphOS: NewList()
 // 2015-10-16  $ AROS: ReadLink()
 // 2015-10-08  $ AROS + MORPHOS: PrintF()
@@ -72,6 +75,9 @@ Uses
   {$ENDIF}
   {$IF DEFINED(AMIGA) or DEFINED(AROS)}
   asl,
+  {$ENDIF}
+  {$IFDEF MORPHOS}
+  DataTypes,
   {$ENDIF}
   Intuition, Utility;
 
@@ -747,7 +753,44 @@ Const
 
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Topic:
+//  Topic: DoDTMethod()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  function  DoDTMethod(o: PObject_; win: PWindow; req: PRequester; const msg: array of const): ULONG; Inline;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: NewDTObject, DoDTMethod, GetDTAttrs, DisposeDTObject
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  function  NewDTObjectA(name: PChar location 'd0'; attrs: pTagItem location 'a0'): PObject_; SysCall DataTypesBase 048;
+  function  NewDTObject(name: PChar; attrs: array of LongWord): PObject_; Inline;
+
+  function  DoDTMethodA(o: PObject_ location 'a0'; win: PWindow location 'a1'; req: PRequester location 'a2'; msg: pLongInt location 'a3'): ULONG; SysCall DataTypesBase 090;
+  function  DoDTMethod(o: PObject_; win: PWindow; req: PRequester; msg: array of LongInt): ULONG; Inline;
+
+  function  GetDTAttrsA(o: PObject_ location 'a0'; attrs: pTagItem location 'a2'): ULONG; SysCall DataTypesBase 066;
+  function  GetDTAttrs(o: PObject_; attrs : array of LongWord): ULONG; Inline;
+
+  procedure DisposeDTObject(o: PObject_ location 'a0'); SysCall DataTypesBase 054;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -766,7 +809,7 @@ implementation
 
 {$IFDEF AMIGA}
 Uses
-  AmigaLib, tagsarray, MUI;
+  AmigaLib, tagsarray, longarray, MUI, datatypes;
 {$ENDIF}
 
 {$IFDEF MORPHOS}
@@ -1614,6 +1657,50 @@ begin
     List^.lh_Tail := nil;
     List^.lh_Head := @List^.lh_Tail;
   end;
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: DoDTMethod()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AMIGA}
+function DoDTMethod(o: PObject_; win: PWindow; req: PRequester; const msg: array of const): ULONG; Inline;
+begin
+  DoDTMethod := DoDTMethodA(o, win, req, readinlongs(msg));
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: NewDTObject, DoDTMethod
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF MORPHOS}
+function  NewDTObject(name: PChar; attrs: array of LongWord): PObject_; Inline;
+begin
+  NewDTObject := NewDTObjectA(name, @attrs);
+end;
+
+function  DoDTMethod(o: PObject_; win: PWindow; req: PRequester; msg: array of LongInt): ULONG; Inline;
+begin
+  DoDTMethod := DoDTMethodA(o, win, req, @msg);
+end;
+
+function  GetDTAttrs(o: PObject_; attrs : array of LongWord): ULONG; Inline;
+begin
+  GetDTAttrs := GetDTAttrsA(o, @attrs);
 end;
 {$ENDIF}
 
