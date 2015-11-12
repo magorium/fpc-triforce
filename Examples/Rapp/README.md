@@ -20,6 +20,7 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | multi3              | Task         | Multitasking example: Background task waiting for commands and replies |
 | uhr                 | Timer        | A simple digital clock as an example for timer.device                  |
 | clock               | Timer        | Another digital clock as an example for timer.device                   |
+| which               | Device       | Search for a command in DOS-path                                       |
 | notify              | Device       | Example for file-Notification                                          |
 | WaitForClick        | Device       | Wait for a mouse click, without the need for an intuition-window       |
 | verzeichnis         | Device       | Read a directory recursively and sort all files according to size      |
