@@ -15,6 +15,7 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | Name                | Category     | Description                                                            |
 | ------------------- | ------------ | ---------------------------------------------------------------------- |
 | area                | GUI          | Example using area functions (AreaMove, AreaDraw, AreaEnd)             |
+| piechart            | GUI          | Draw a simple piechart                                                 |
 | multi               | Task         | An example for multitasking                                            |
 | multi1              | Task         | Multitasking example: Process a task in the background                 |
 | multi2              | Task         | Multitasking example: Background task sending progress messages        |
