@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-11-16  $ AROS: gadtools varargs version routines
 // 2015-11-10  $ Amiga: DoDTMethod()
 //             $ MorphOS: NewDTObject(), DoDTMethod(), GetDTAttrs(), 
 //               DisposeDTObject()
@@ -78,6 +79,10 @@ Uses
   {$ENDIF}
   {$IFDEF MORPHOS}
   DataTypes,
+  {$ENDIF}
+  {$IFDEF AROS}
+  AGraphics,
+  GadTools,
   {$ENDIF}
   Intuition, Utility;
 
@@ -784,6 +789,27 @@ Const
   function  GetDTAttrs(o: PObject_; attrs : array of LongWord): ULONG; Inline;
 
   procedure DisposeDTObject(o: PObject_ location 'a0'); SysCall DataTypesBase 054;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic:  AROS gadtools
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AROS}
+  function  CreateGadget(kind: ULONG; previous: PGadget; ng: PNewGadget; const Tags: array of const): PGadget;
+  function  CreateMenus(newmenu: PNewMenu; const Tags: array of const): PMenu;
+  procedure DrawBevelBox(rport: PRastPort; left: SmallInt; top: SmallInt; width: SmallInt; Height: SmallInt; const Tags: array of const);
+  function  GetVisualInfo(Screen: PScreen; const Tags: array of const): APTR;
+  function  GT_GetGadgetAttrs(gad: PGadget; win: PWindow; req: PRequester; const Tags: array of const): LongInt;
+  procedure GT_SetGadgetAttrs(gad: PGadget; win: PWindow; req: PRequester; const Tags: array of const);
+  function  LayoutMenuItems(menuitem: PMenuItem; vi: APTR; const Tags: array of const): LongBool;
+  function  LayoutMenus(menu: PMenu; vi: APTR; const Tags: array of const): LongBool;
   {$ENDIF}
 
 
@@ -1701,6 +1727,105 @@ end;
 function  GetDTAttrs(o: PObject_; attrs : array of LongWord): ULONG; Inline;
 begin
   GetDTAttrs := GetDTAttrsA(o, @attrs);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic:  AROS gadtools varargs version routines
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AROS}
+function  CreateGadget(kind: ULONG; previous: PGadget; ng: PNewGadget; const Tags: array of const): PGadget;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  CreateGadget := CreateGadgetA(kind, previous, ng, GetTagPtr(TagList));
+end;
+
+
+function  CreateMenus(newmenu: PNewMenu; const Tags: array of const): PMenu;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  CreateMenus := CreateMenusA(newmenu, GetTagPtr(TagList));
+end;
+
+
+procedure DrawBevelBox(rport: PRastPort; left: SmallInt; top: SmallInt; width: SmallInt; Height: SmallInt; const Tags: array of const);
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  DrawBevelBoxA(rport, left, top, width, height, GetTagPtr(TagList));
+end;
+
+
+function  GetVisualInfo(Screen: PScreen; const Tags: array of const): APTR;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  GetVisualInfo := GetVisualInfoA(Screen, GetTagPtr(TagList));
+end;
+
+
+function  GT_GetGadgetAttrs(gad: PGadget; win: PWindow; req: PRequester; const Tags: array of const): LongInt;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  GT_GetGadgetAttrs := GT_GetGadgetAttrsA(gad, win, req, GetTagPtr(TagList));
+end;
+
+
+procedure GT_SetGadgetAttrs(gad: PGadget; win: PWindow; req: PRequester; const Tags: array of const);
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  GT_SetGadgetAttrsA(gad, win, req, GetTagPtr(TagList));
+end;
+
+
+function  LayoutMenuItems(menuitem: PMenuItem; vi: APTR; const Tags: array of const): LongBool;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  LayoutMenuItems := LayoutMenuItemsA(menuitem, vi, GetTagPtr(TagList));
+end;
+
+
+function  LayoutMenus(menu: PMenu; vi: APTR; const Tags: array of const): LongBool;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  LayoutMenus := LayoutMenusA(menu, vi, GetTagPtr(TagList));
 end;
 {$ENDIF}
 
