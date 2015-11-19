@@ -2,21 +2,19 @@ unit gadtools;
 
 
 {$MODE OBJFPC}{$H+}
+
 {$IFDEF AMIGA}   {$PACKRECORDS 2} {$ENDIF}
 {$IFDEF AROS}    {$PACKRECORDS C} {$ENDIF}
 {$IFDEF MORPHOS} {$PACKRECORDS 2} {$ENDIF}
+
+{$UNITPATH ../Trinity/}
+
 
 interface
 
 
 uses
-  exec, intuition, agraphics, utility;
-
-
-Type
-  SWORD = SmallInt;
-  SLONG = LongInt;
-  LBOOL = LongBool;
+  TriniTypes, Exec, intuition, agraphics, utility;
 
 
 Type
