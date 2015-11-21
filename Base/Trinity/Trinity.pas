@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2105-11-21  $ Amiga: AddAppIconA = AddAppIcon
 // 2015-11-16  $ AROS: gadtools varargs version routines
 // 2015-11-10  $ Amiga: DoDTMethod()
 //             $ MorphOS: NewDTObject(), DoDTMethod(), GetDTAttrs(), 
@@ -75,6 +76,8 @@ Uses
   InputEvent, // For IECODE_MBUTTON to aid MIDDLEDOWN & MIDDLEUP consts
   {$ENDIF}
   {$IF DEFINED(AMIGA) or DEFINED(AROS)}
+  Workbench,
+  Icon,
   asl,
   {$ENDIF}
   {$IFDEF MORPHOS}
@@ -810,6 +813,22 @@ Const
   procedure GT_SetGadgetAttrs(gad: PGadget; win: PWindow; req: PRequester; const Tags: array of const);
   function  LayoutMenuItems(menuitem: PMenuItem; vi: APTR; const Tags: array of const): LongBool;
   function  LayoutMenus(menu: PMenu; vi: APTR; const Tags: array of const): LongBool;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic:  AddAppIcon()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  function AddAppIconA(id: ULONG location 'd0'; userdata: ULONG location 'd1'; txt: PChar location 'a0'; msgport: PMsgPort location 'a1'; lock: BPTR location 'a2'; diskobj: PDiskObject location 'a3'; const taglist: PTagItem location 'a4'):PAppIcon; syscall WorkbenchBase 060;
+
+  function AddAppIcon(id: ULONG; userdata: ULONG; txt: PChar; msgport: PMsgPort; lock: BPTR; diskobj: PDiskObject; const Tags: array of const): PAppIcon;
   {$ENDIF}
 
 
@@ -1833,6 +1852,23 @@ end;
 
 //////////////////////////////////////////////////////////////////////////////
 //
+//  Topic: AddAppIcon
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AMIGA}
+function AddAppIcon(id: ULONG; userdata: ULONG; txt: PChar; msgport: PMsgPort; lock: BPTR; diskobj: PDiskObject; const Tags: array of const): PAppIcon;
+begin
+  AddAppIcon := AddAppIconA(id, userdata, txt, msgport, lock, diskobj, ReadInTags(Tags));
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -1844,7 +1880,5 @@ end;
 //  Topic: 
 //
 //////////////////////////////////////////////////////////////////////////////
-
-
 
 end.
