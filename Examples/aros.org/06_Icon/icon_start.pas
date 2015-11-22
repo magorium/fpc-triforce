@@ -70,7 +70,7 @@ var
   idx   : LONG;
 begin
   {$IFDEF MORPHOS}
-  if (argc <> 0) then
+  if (MOS_ambMsg = nil) then
   {$ELSE}  
   if (AOS_WBMsg = nil) then
   {$ENDIF}
@@ -81,7 +81,7 @@ begin
   else
   begin
     {$IFDEF MORPHOS}
-    wbmsg := pWBStartup(argv);
+    wbmsg := MOS_ambMsg;
     {$ELSE}
     wbmsg := AOS_WBMsg;
     {$ENDIF}    
