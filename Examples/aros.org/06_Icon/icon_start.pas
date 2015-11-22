@@ -95,9 +95,9 @@ begin
     {$I-}
     Rewrite(conwin);
     {$I+}
-    conwin_valid := (IOResult <> 0);
+    conwin_valid := (IOResult = 0);
 
-    if (conwin_valid) then
+    if not(conwin_valid) then
     begin
       clean_exit('Can''t open console window');
     end;
