@@ -8,7 +8,9 @@ program icon_start;
 
 {$UNITPATH ../../../Base/CHelpers}
 {$UNITPATH ../../../Base/Trinity}
-
+{$IFDEF AMIGA}   {$UNITPATH ../../../Sys/Amiga}   {$ENDIF}
+{$IFDEF AROS}    {$UNITPATH ../../../Sys/AROS}    {$ENDIF}
+{$IFDEF MORPHOS} {$UNITPATH ../../../Sys/MorphOS} {$ENDIF}
 {
   ===========================================================================
   Project : icon_start
