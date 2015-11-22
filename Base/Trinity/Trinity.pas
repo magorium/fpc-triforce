@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-11-22  $ Amiga + MorphOS: Missing DrawCircle macro
 // 2015-11-22  $ All: Overload version of INST_DATA accepting generic pointer
 //               for object parameter
 // 2015-11-21  $ Amiga: AddAppIconA = AddAppIcon
@@ -844,6 +845,20 @@ Const
 
 
   function INST_DATA(cl: PIClass; o: Pointer): Pointer; overload;
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: DrawCircle
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+  procedure DrawCircle(Rp: PRastPort; xCenter, yCenter, r: LongInt); inline;
+  {$ENDIF}
 
 
 
@@ -1893,6 +1908,23 @@ function INST_DATA(cl: PIClass; o: Pointer): Pointer;
 begin
   INST_DATA := Pointer(PtrUInt(o) + cl^.cl_InstOffset);
 end;
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: DrawCircle
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+procedure DrawCircle(Rp: PRastPort; xCenter, yCenter, r: LongInt); inline;
+begin
+  DrawEllipse(Rp, xCenter, yCenter, r, r);
+end;
+{$ENDIF}
 
 
 
