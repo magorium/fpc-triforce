@@ -69,8 +69,11 @@ Const
 
 
 var
-  bm        : pBitmap;
-  bm_rp     : pRastPort;
+  bm             : pBitmap;
+  {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
+  bm_rp_struct  : TRastport;
+  {$ENDIF}
+  bm_rp         : pRastPort;
 
 
 
@@ -156,7 +159,12 @@ begin
   bm := AllocBitMap(BMWIDTH, BMHEIGHT, depth, BMF_MINPLANES, win_rp^.BitMap);
   if not assigned(bm) then clean_exit('Can''t allocate bitmap' + LineEnding);
 
+  {$IFDEF AROS}
   bm_rp := CreateRastPort;      // create rastport for our bitmap
+  {$ELSE}
+  bm_rp := @bm_rp_struct;
+  InitRastPort(bm_rp);
+  {$ENDIF}
   if not assigned(bm_rp) then clean_exit('Can''t allocate rastport!' + LineEnding);
   bm_rp^.Bitmap := bm;          // Link bitmap to rastport
 
@@ -222,7 +230,9 @@ begin
 
   // Give back allocated resources
   if assigned(bm)     then FreeBitMap(bm);
+  {$IFDEF AROS}
   if assigned(bm_rp)  then FreeRastPort(bm_rp);
+  {$ENDIF}
   if (pen1 <> -1)     then ReleasePen(cm, pen1);
   if (pen2 <> -1)     then ReleasePen(cm, pen2);
   if assigned(window) then CloseWindow(window);
