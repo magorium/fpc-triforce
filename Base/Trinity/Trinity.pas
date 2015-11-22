@@ -4,7 +4,9 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
-// 2105-11-21  $ Amiga: AddAppIconA = AddAppIcon
+// 2015-11-22  $ All: Overload version of INST_DATA accepting generic pointer
+//               for object parameter
+// 2015-11-21  $ Amiga: AddAppIconA = AddAppIcon
 // 2015-11-16  $ AROS: gadtools varargs version routines
 // 2015-11-10  $ Amiga: DoDTMethod()
 //             $ MorphOS: NewDTObject(), DoDTMethod(), GetDTAttrs(), 
@@ -830,6 +832,18 @@ Const
 
   function AddAppIcon(id: ULONG; userdata: ULONG; txt: PChar; msgport: PMsgPort; lock: BPTR; diskobj: PDiskObject; const Tags: array of const): PAppIcon;
   {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic:  INST_DATA()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  function INST_DATA(cl: PIClass; o: Pointer): Pointer; overload;
 
 
 
@@ -1864,6 +1878,21 @@ begin
   AddAppIcon := AddAppIconA(id, userdata, txt, msgport, lock, diskobj, ReadInTags(Tags));
 end;
 {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: 
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+function INST_DATA(cl: PIClass; o: Pointer): Pointer;
+begin
+  INST_DATA := Pointer(PtrUInt(o) + cl^.cl_InstOffset);
+end;
 
 
 
