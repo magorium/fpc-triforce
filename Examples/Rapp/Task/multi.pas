@@ -134,6 +134,9 @@ begin
     WriteLn('Start subtask.');
     CreateNewProcTags(
     [
+      {$IFDEF MORPHOS}
+      TAG_(NP_CodeType) , TAG_(CODETYPE_PPC),
+      {$ENDIF}
       TAG_(NP_Entry)    , TAG_(@subtask),
       TAG_(NP_Name)     , TAG_(PChar('multi_subtask')),
       TAG_END

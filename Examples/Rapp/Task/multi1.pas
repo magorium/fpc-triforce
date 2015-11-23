@@ -126,8 +126,11 @@ begin
   begin
     if SetAndTest(pr, CreateNewProcTags(
     [
-      TAG_(NP_Name) , TAG_(PChar('example_background_task')),
-      TAG_(NP_Entry), TAG_(@background_task),
+      {$IFDEF MORPHOS}
+      TAG_(NP_CodeType) , TAG_(CODETYPE_PPC),
+      {$ENDIF}
+      TAG_(NP_Name)     , TAG_(PChar('example_background_task')),
+      TAG_(NP_Entry)    , TAG_(@background_task),
       TAG_END
     ])) then
     begin
