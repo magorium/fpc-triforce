@@ -25,20 +25,20 @@ program WaitForClick;
 
   This example was originally written in c by Thomas Rapp.
 
-  The original examples are available online and published at Thomas Rapp's 
+  The original examples are available online and published at Thomas Rapp's
   website (http://thomas-rapp.homepage.t-online.de/examples)
 
-  The c-sources were converted to Free Pascal, and (variable) names and 
+  The c-sources were converted to Free Pascal, and (variable) names and
   comments were translated from German into English as much as possible.
 
-  Free Pascal sources were adjusted in order to support the following targets 
+  Free Pascal sources were adjusted in order to support the following targets
   out of the box:
   - Amiga-m68k, AROS-i386 and MorphOS-ppc
 
-  In order to accomplish that goal, some use of support units is used that 
+  In order to accomplish that goal, some use of support units is used that
   aids compilation in a more or less uniform way.
 
-  Conversion to Free Pascal and translation was done by Magorium in 2015, 
+  Conversion to Free Pascal and translation was done by Magorium in 2015,
   with kind permission from Thomas Rapp to be able to publish.
 
   ===========================================================================
@@ -62,28 +62,51 @@ Const
 
 
 
-function  handlerproc(ieList: PInputEvent; port: PMsgPort): PInputEvent; cdecl;
+{$ifdef MorphOS}
+procedure IOARG(var event; var port); assembler;
+asm
+  lwz r6,32(r2) // REG_a0
+  stw r6,(r3)   // event
+  lwz r6,36(r2) // REG_a1
+  stw r6,(r4)   // port
+end;
+
+function  handlerproc: PInputEvent; {$ifdef AROS}cdecl;{$endif}
+var
+  ieList: PInputEvent;
+  port: PMsgPort;
+  ie, prev: pInputEvent;
+begin
+  IOARG(ieList, port);
+{$else}
+function  handlerproc(ieList: PInputEvent; port: PMsgPort): PInputEvent; {$ifdef AROS}cdecl;{$endif}
 var
   ie, prev: pInputEvent;
 begin
+{$endif}
   ie := ielist;
   prev := nil;
 
   repeat
     if (ie^.ie_Class = IECLASS_RAWMOUSE) and (ie^.ie_Code = IECODE_LBUTTON) then
     begin
-      if assigned(prev) 
+      if assigned(prev)
       then prev^.ie_NextEvent := ie^.ie_NextEvent
       else ielist := ie^.ie_NextEvent;
       Signal (port^.mp_SigTask, 1 shl port^.mp_SigBit);
     end
-	else
+  else
       prev := ie;
     ie := ie^.ie_NextEvent;
   until not assigned(ie);
 
   result := (ielist);
 end;
+
+{$ifdef MorphOS}
+const
+  ENTRY_TRAP: TEmulLibEntry = ( Trap: TRAP_LIB; Extension: 0; Func: @handlerproc);
+{$endif}
 
 
 //*-------------------------------------------------------------------------*/
@@ -106,11 +129,15 @@ begin
         if not(OpenDevice('input.device', 0, PIORequest(req),0) <> 0)
           then dev_open := TRUE;
 
-  if not(dev_open) 
+  if not(dev_open)
   then WriteLn('could not open input.device')
   else
   begin
+    {$ifdef MorphOS}
+    handler^.is_Code := APTR(@ENTRY_TRAP);
+    {$else}
     handler^.is_Code := APTR(@handlerproc);
+    {$endif}
     handler^.is_Data := APTR(port);
     handler^.is_Node.ln_Type := NT_EXTINTERRUPT;
     handler^.is_Node.ln_Pri  := 60; //* above intuition's handler */
@@ -122,14 +149,14 @@ begin
      "port" is not used by the device at this time so we can "mis-use" it as
      signal for the mouse click. The MsgPort structure comes handy because it
      already has the task pointer and signal number filled in.
-     If we could not use the port, we would have to allocate a second signal 
-     and put the signal number and a pointer to the main task into is_Data so 
+     If we could not use the port, we would have to allocate a second signal
+     and put the signal number and a pointer to the main task into is_Data so
      that the handler can use them to signal us.
    *}
 
     SetSignal(0, 1 shl port^.mp_SigBit); //* clear port's signal in case DoIO didn't do that */
 
-	sigs := Wait ( (1 shl port^.mp_SigBit) or SIGBREAKF_CTRL_C);
+  sigs := Wait ( (1 shl port^.mp_SigBit) or SIGBREAKF_CTRL_C);
 
     rc := RETURN_OK;
 
@@ -177,11 +204,11 @@ end;
 begin
   WriteLn('enter');
 
-  if OpenLibs 
+  if OpenLibs
   then ExitCode := Main
   else ExitCode := RETURN_FAIL;
 
   CloseLibs;
-  
+
   WriteLn('leave');
 end.
