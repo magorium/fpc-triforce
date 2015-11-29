@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-11-29  $ Amiga + MorphOS: SetWindowPointer()
 // 2015-11-22  $ Amiga + MorphOS: Missing DrawCircle macro
 // 2015-11-22  $ All: Overload version of INST_DATA accepting generic pointer
 //               for object parameter
@@ -858,6 +859,23 @@ Const
 
   {$IF DEFINED(AMIGA) or DEFINED(MORPHOS)}
   procedure DrawCircle(Rp: PRastPort; xCenter, yCenter, r: LongInt); inline;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: SetWindowPointer()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  Procedure SetWindowPointer(window: PWindow; const Tags: array of const);
+  {$ENDIF}
+  {$IFDEF MORPHOS}
+  Procedure SetWindowPointer(window: PWindow; const tagArray: array of ULONG);
   {$ENDIF}
 
 
@@ -1923,6 +1941,29 @@ end;
 procedure DrawCircle(Rp: PRastPort; xCenter, yCenter, r: LongInt); inline;
 begin
   DrawEllipse(Rp, xCenter, yCenter, r, r);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: SetWindowPointer()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AMIGA}
+Procedure SetWindowPointer(window: PWindow; const Tags: array of const);
+begin
+  SetWindowPointerA(window, ReadInTags(Tags));
+end;
+{$ENDIF}
+{$IFDEF MORPHOS}
+Procedure SetWindowPointer(window: PWindow; const tagArray: array of ULONG);
+begin
+  SetWindowPointerA(window, @tagArray);
 end;
 {$ENDIF}
 
