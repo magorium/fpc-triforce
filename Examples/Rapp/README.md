@@ -23,6 +23,7 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | KeyJoy              | GUI          | Control a point on a playground with the cursor keys - by means of "intuition.library" |
 | draw                | GUI          | IDCMP input: draw with the mouse                                                       |
 | scroll              | GUI          | Move text on the screen. Control via Gadtools-button                                   |
+| fibgui              | GUI          | Calculation of Fibonacci numbers with button for stopping subtask                      |
 | multi               | Task         | An example for multitasking                                                            |
 | multi1              | Task         | Multitasking example: Process a task in the background                                 |
 | multi2              | Task         | Multitasking example: Background task sending progress messages                        |
