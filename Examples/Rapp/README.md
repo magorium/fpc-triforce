@@ -19,11 +19,12 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | region              | GUI          | Example for clip-regions                                                               |
 | clip                | GUI          | Offline bitmap example with clipping                                                   |
 | bob4                | GUI          | Example of how to implement drag and drop                                              |
-} maus                | GUI          | How to query the mouse in an intuition-window                                          |
+| maus                | GUI          | How to query the mouse in an intuition-window                                          |
 | KeyJoy              | GUI          | Control a point on a playground with the cursor keys - by means of "intuition.library" |
 | draw                | GUI          | IDCMP input: draw with the mouse                                                       |
 | scroll              | GUI          | Move text on the screen. Control via Gadtools-button                                   |
 | fibgui              | GUI          | Calculation of Fibonacci numbers with button for stopping subtask                      |
+| gadtoolsexample     | GUI          | Example of GUI programming with GadTools                                               |
 | multi               | Task         | An example for multitasking                                                            |
 | multi1              | Task         | Multitasking example: Process a task in the background                                 |
 | multi2              | Task         | Multitasking example: Background task sending progress messages                        |
