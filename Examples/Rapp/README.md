@@ -26,6 +26,7 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | fibgui              | GUI          | Calculation of Fibonacci numbers with button for stopping subtask                      |
 | gadtoolsexample     | GUI          | Example of GUI programming with GadTools                                               |
 | gtmenu              | GUI          | Example of menus made with gadtools                                                    |
+| manywindows         | GUI          | Open maaaaany windows                                                                  |
 | multi               | Task         | An example for multitasking                                                            |
 | multi1              | Task         | Multitasking example: Process a task in the background                                 |
 | multi2              | Task         | Multitasking example: Background task sending progress messages                        |
