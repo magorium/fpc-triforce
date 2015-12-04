@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-12-04  $ Amiga: CloseScreen(), returns a bool since v36.
 // 2015-11-29  $ Amiga + MorphOS: SetWindowPointer()
 // 2015-11-22  $ Amiga + MorphOS: Missing DrawCircle macro
 // 2015-11-22  $ All: Overload version of INST_DATA accepting generic pointer
@@ -876,6 +877,20 @@ Const
   {$ENDIF}
   {$IFDEF MORPHOS}
   Procedure SetWindowPointer(window: PWindow; const tagArray: array of ULONG);
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: CloseScreen()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  function  CloseScreen(screen: PScreen location 'a0'): LongBool; SysCall _IntuitionBase 066;
   {$ENDIF}
 
 
