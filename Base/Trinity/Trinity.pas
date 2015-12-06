@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-12-06  $ MorphOS: BestModeID()
 // 2015-12-04  $ Amiga: CloseScreen(), returns a bool since v36.
 // 2015-11-29  $ Amiga + MorphOS: SetWindowPointer()
 // 2015-11-22  $ Amiga + MorphOS: Missing DrawCircle macro
@@ -891,6 +892,20 @@ Const
 
   {$IFDEF AMIGA}
   function  CloseScreen(screen: PScreen location 'a0'): LongBool; SysCall _IntuitionBase 066;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: BestModeID()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  function  BestModeID(Const tagArray: Array Of ULONG): ULONG;
   {$ENDIF}
 
 
@@ -1979,6 +1994,23 @@ end;
 Procedure SetWindowPointer(window: PWindow; const tagArray: array of ULONG);
 begin
   SetWindowPointerA(window, @tagArray);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: BestModeID()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF MORPHOS}
+function  BestModeID(Const tagArray: Array Of ULONG): ULONG;
+begin
+  BestModeID := BestModeIDA(@tagArray);
 end;
 {$ENDIF}
 
