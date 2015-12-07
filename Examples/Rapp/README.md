@@ -28,6 +28,7 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | gtmenu              | GUI          | Example of menus made with gadtools                                                    |
 | manywindows         | GUI          | Open maaaaany windows                                                                  |
 | pubscr              | GUI          | Example of a public screen                                                             |
+| bestmode            | GUI          | Open a screen with desired dimensions                                                  |
 | multi               | Task         | An example for multitasking                                                            |
 | multi1              | Task         | Multitasking example: Process a task in the background                                 |
 | multi2              | Task         | Multitasking example: Background task sending progress messages                        |
