@@ -29,6 +29,7 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | manywindows         | GUI          | Open maaaaany windows                                                                  |
 | pubscr              | GUI          | Example of a public screen                                                             |
 | bestmode            | GUI          | Open a screen with desired dimensions                                                  |
+| iconify             | GUI          | Example for implementing Iconify                                                       |
 | multi               | Task         | An example for multitasking                                                            |
 | multi1              | Task         | Multitasking example: Process a task in the background                                 |
 | multi2              | Task         | Multitasking example: Background task sending progress messages                        |
