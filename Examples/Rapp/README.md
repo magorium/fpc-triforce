@@ -31,6 +31,7 @@ Note that these examples are copyrighted :copyright: by their respective owners.
 | bestmode            | GUI          | Open a screen with desired dimensions                                                  |
 | iconify             | GUI          | Example for implementing Iconify                                                       |
 | bordergad           | GUI          | How to add gadgets to window borders                                                   |
+| iconifygad          | GUI          | BOOPSI Image for displaying an Iconify symbol                                          |
 | multi               | Task         | An example for multitasking                                                            |
 | multi1              | Task         | Multitasking example: Process a task in the background                                 |
 | multi2              | Task         | Multitasking example: Background task sending progress messages                        |
