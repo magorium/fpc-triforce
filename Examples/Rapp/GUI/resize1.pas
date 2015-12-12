@@ -136,7 +136,7 @@ begin
   rx     := width div 2 - 1;
   ry     := height div 2 - 1;
   size   := round(M_PI * sqrt(2 * (cx*cx + cy*cy))) * TIMES_SLOWER;
-  factor := (M_PI / size / 2.0);
+  factor := M_PI / (size / 2.0);
   SetAPen(rp, 2);
   RectFill(rp, left, top, left + width - 1, top + height - 1);
   SetAPen(rp, pen);
