@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-12-16  $ MorphOS: SystemTags()
 // 2015-12-06  $ MorphOS: BestModeID()
 // 2015-12-04  $ Amiga: CloseScreen(), returns a bool since v36.
 // 2015-11-29  $ Amiga + MorphOS: SetWindowPointer()
@@ -906,6 +907,20 @@ Const
 
   {$IFDEF MORPHOS}
   function  BestModeID(Const tagArray: Array Of ULONG): ULONG;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: Systemtags()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  function  SystemTags(const Command: STRPTR; const TagArray: array of ULONG): LONG;
   {$ENDIF}
 
 
@@ -2011,6 +2026,23 @@ end;
 function  BestModeID(Const tagArray: Array Of ULONG): ULONG;
 begin
   BestModeID := BestModeIDA(@tagArray);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: Systemtags()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF MORPHOS}
+function  SystemTags(const Command: STRPTR; const TagArray: array of ULONG): LONG;
+begin
+  Systemtags := SystemTagList(Command, @tagArray);
 end;
 {$ENDIF}
 
