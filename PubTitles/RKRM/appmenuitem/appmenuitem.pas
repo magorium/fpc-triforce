@@ -131,8 +131,8 @@ begin
   {$IFDEF AROS}
   WriteLn('INFO: This example does not work for the AROS platform.');
   WriteLn;
-  WriteLn('Reason is that none f the current availble desktops support adding ');
-  Writeln('tools to the workbench/desktop menu.                               ');
+  WriteLn('Reason is that none of the available desktops support adding tools ');
+  Writeln('to the workbench/desktop menu.                                     ');
   WriteLn;
   Writeln('< Press enter to continue >');
   ReadLn;
