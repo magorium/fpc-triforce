@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2015-12-29  $ MorphOS: SetPointer()
 // 2015-12-16  $ MorphOS: SystemTags()
 // 2015-12-06  $ MorphOS: BestModeID()
 // 2015-12-04  $ Amiga: CloseScreen(), returns a bool since v36.
@@ -921,6 +922,20 @@ Const
 
   {$IFDEF MORPHOS}
   function  SystemTags(const Command: STRPTR; const TagArray: array of ULONG): LONG;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: SetPointer()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  procedure SetPointer(window: PWindow location 'a0'; pointer_: PSmallInt location 'a1'; height: SmallInt location 'd0'; width: SmallInt location 'd1'; xOffset: SmallInt location 'd2'; yOffset: SmallInt location 'd3'); SysCall IntuitionBase 270;
   {$ENDIF}
 
 
