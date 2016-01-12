@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2016-01-11  $ Amiga + AROS: CreateContext() + PPGadget;
 // 2015-12-29  $ MorphOS: SetPointer()
 // 2015-12-16  $ MorphOS: SystemTags()
 // 2015-12-06  $ MorphOS: BestModeID()
@@ -87,13 +88,13 @@ Uses
   Workbench,
   Icon,
   asl,
+  GadTools,
   {$ENDIF}
   {$IFDEF MORPHOS}
   DataTypes,
   {$ENDIF}
   {$IFDEF AROS}
   AGraphics,
-  GadTools,
   {$ENDIF}
   Intuition, Utility;
 
@@ -936,6 +937,28 @@ Const
 
   {$IFDEF MORPHOS}
   procedure SetPointer(window: PWindow location 'a0'; pointer_: PSmallInt location 'a1'; height: SmallInt location 'd0'; width: SmallInt location 'd1'; xOffset: SmallInt location 'd2'; yOffset: SmallInt location 'd3'); SysCall IntuitionBase 270;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: CreateContext() + PPGadget;
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IF DEFINED(AMIGA) or DEFINED(AROS)}
+Type
+  PPGadget = ^PGadget;
+{$ENDIF}
+
+  {$IFDEF AMIGA}
+  function  CreateContext(glistptr: PPGadget location 'a0'): PGadget; syscall GadToolsBase 114;
+  {$ENDIF}
+  {$IFDEF AROS}
+  function  CreateContext(GListPtr: PPGadget): PGadget; syscall GadToolsBase 19;
   {$ENDIF}
 
 
