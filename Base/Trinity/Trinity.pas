@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2016-01-12  $ AROS: NewCreateTask()
 // 2016-01-11  $ Amiga + AROS: CreateContext() + PPGadget;
 // 2015-12-29  $ MorphOS: SetPointer()
 // 2015-12-16  $ MorphOS: SystemTags()
@@ -959,6 +960,21 @@ Type
   {$ENDIF}
   {$IFDEF AROS}
   function  CreateContext(GListPtr: PPGadget): PGadget; syscall GadToolsBase 19;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: NewCreateTask()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AROS}
+  function  NewCreateTaskA(tags: PTagItem): PTask; syscall AOS_ExecBase 153;
+  function  NewCreateTask(const Tags: array of const): PTask;
   {$ENDIF}
 
 
@@ -2081,6 +2097,28 @@ end;
 function  SystemTags(const Command: STRPTR; const TagArray: array of ULONG): LONG;
 begin
   Systemtags := SystemTagList(Command, @tagArray);
+end;
+{$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: NewCreateTask()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+{$IFDEF AROS}
+function  NewCreateTask(const Tags: array of const): PTask;
+var
+  TagList: TTagsList;
+begin
+  {$PUSH}{$HINTS OFF}
+  AddTags(TagList, Tags);
+  {$POP}
+  NewCreateTask := NewCreateTaskA(GetTagPtr(TagList));
 end;
 {$ENDIF}
 
