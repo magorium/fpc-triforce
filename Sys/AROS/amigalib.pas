@@ -28,11 +28,16 @@ uses
 
 
   function  ACrypt(buffer: PChar; password: PChar; username: PChar): PChar;
+  function  ArosInquire(Const tags: Array of Const): ULONG;
   function  FastRand(seed: ULONG): ULONG;
   function  RangeRand(maxValue: ULONG): ULONG;
 
 
 implementation
+
+uses
+  ArosLib,
+  tagsarray;
 
 
 
@@ -147,6 +152,25 @@ begin
 
   RangeRand := UWORD(a);
 end;
+
+
+
+// ###########################################################################
+// ###
+// ###    ArosLib
+// ###
+// ###########################################################################
+
+
+
+function  ArosInquire(Const tags: Array of Const): ULONG;
+Var
+  TagList: TTagsList;
+begin
+  AddTags(TagList, tags);
+  ArosInquire := ArosInquireA(GetTagPtr(TagList));
+end;
+
 
 
 end.
