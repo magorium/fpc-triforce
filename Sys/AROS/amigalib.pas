@@ -26,18 +26,70 @@ uses
   Exec;
 
 
+type
+  TNewPutCharProc      = procedure;
+  TSortListCompareFunc = function(n1: PMinNode; n2: PMinNode; data: pointer): integer;
+
 
   function  ACrypt(buffer: PChar; password: PChar; username: PChar): PChar;
   function  ArosInquire(Const tags: Array of Const): ULONG;
+  function  AsmAllocPooled(poolHeader: APTR; memSize: ULONG): APTR;
+  function  AsmCreatePool(MemFlags: ULONG; PuddleSize: ULONG; ThreshSize: ULONG): APTR;
+  procedure AsmDeletePool(poolHeader: APTR);
+  procedure AsmFreePooled(poolHeader: APTR; Memory: APTR; MemSize: ULONG);
+  procedure BeginIO(ioRequest: PIORequest);
+  function  CreateExtIO(port: PMsgPort; iosize: ULONG): PIORequest;
+  function  CreatePort(name: STRPTR; pri: LONG): PMsgPort;
+  function  CreateStdIO(port: PMsgPort): PIOStdReq;
+  function  CreateTask(name: STRPTR; pri: LONG; initpc: APTR; stacksize: ULONG): PTask;
+  procedure DeleteExtIO(ioreq: PIORequest);
+  procedure DeletePort(mp: PMsgPort);
+  procedure DeleteStdIO(io: PIOStdReq);
+  procedure DeleteTask(task: PTask);
   function  FastRand(seed: ULONG): ULONG;
+  function  LibAllocAligned(memSize: APTR; requirements: ULONG; alignBytes: IPTR): APTR;
+  function  LibAllocPooled(pool: APTR; memSize: ULONG): APTR;
+  function  LibCreatePool(requirements: ULONG; puddleSize: ULONG; threshSize: ULONG): Pointer; 
+  procedure LibDeletePool(pool: APTR);
+  procedure LibFreePooled(pool: APTR; memory: APTR; memSize: ULONG);
+  procedure MergeSortList(l: PMinList; compare: TSortListCompareFunc; data: Pointer);
+  procedure NewList(list: PList);
+  function  NewRawDoFmt(const fomtString: STRPTR; PutChProc: TNewPutCharProc; PutChData: APTR; valueList: PLong): STRPTR;
   function  RangeRand(maxValue: ULONG): ULONG;
+
 
 
 implementation
 
+
 uses
-  ArosLib,
+  ArosLib, Utility,
   tagsarray;
+
+
+
+// ###########################################################################
+// ###
+// ###    FIXES: Remove when present in trunk/new release
+// ###           Currently here to prevent dragging in trinity unit
+// ###
+// ###########################################################################
+
+
+
+  function  NewCreateTaskA(tags: PTagItem): PTask; syscall AOS_ExecBase 153; 
+
+
+
+function  NewCreateTask(const Tags: array of const): PTask; 
+var 
+  TagList: TTagsList; 
+begin 
+  {$PUSH}{$HINTS OFF} 
+  AddTags(TagList, Tags); 
+  {$POP} 
+  NewCreateTask := NewCreateTaskA(GetTagPtr(TagList)); 
+end;
 
 
 
@@ -169,6 +221,426 @@ Var
 begin
   AddTags(TagList, tags);
   ArosInquire := ArosInquireA(GetTagPtr(TagList));
+end;
+
+
+
+// ###########################################################################
+// ###
+// ###    Exec
+// ###
+// ###########################################################################
+
+
+
+type
+  // PRIVATE! memory pool structure (_NOT_ compatible with original amiga.lib!)
+  PPool = ^TPool;
+  TPool = record
+    PuddleList  : TMinList;
+    ThreshList  : TMinList;
+
+    MemoryFlags : ULONG;
+    PuddleSize  : ULONG;
+    ThreshSize  : ULONG;
+  end;
+
+
+
+function  AsmAllocPooled(poolHeader: APTR; memSize: ULONG): APTR;
+begin
+  AsmAllocPooled := AllocPooled(poolHeader, memSize);
+end;
+
+
+procedure AsmFreePooled(poolHeader: APTR; Memory: APTR; MemSize: ULONG);
+begin
+  FreePooled(poolHeader, Memory, MemSize);
+end;
+
+
+function  AsmCreatePool(MemFlags: ULONG; PuddleSize: ULONG; ThreshSize: ULONG): APTR;
+begin
+  AsmCreatePool := CreatePool(MemFlags, PuddleSize, ThreshSize);
+end;
+
+
+procedure AsmDeletePool(poolHeader: APTR);
+begin
+  DeletePool(poolHeader);
+end;
+
+
+function  LibAllocAligned(memSize: APTR; requirements: ULONG; alignBytes: IPTR): APTR;
+var
+  pt        : APTR;
+  alignMask : IPTR;
+var
+  apt       : APTR;
+begin
+  // Verify that alignBytes is a power of two
+  if ( (Ord(alignBytes) and (ord(alignBytes)-1)) <> 0)
+  then exit(nil);
+
+  // Verify that memSize is modulo alignBytes
+  if ( ( IPTR(memSize) and (alignBytes - 1) ) <> 0)
+  then exit(nil);
+
+  alignMask := alignBytes - 1;
+
+  pt := AllocMem(LongWord(memSize + alignMask), requirements);
+  if (pt <> nil) then
+  begin
+    apt := APTR( ( IPTR(pt) + alignMask) and not alignMask);
+    Forbid;
+    FreeMem(pt, LongWord(memSize + alignMask));
+    pt := AllocAbs(LongWord(memSize), apt);
+    Permit;
+  end;
+
+  LibAllocAligned := pt;
+end;
+
+
+function  LibAllocPooled(pool: APTR; memSize: ULONG): APTR;
+var
+  poolHeader    : PPOOL absolute pool;
+  puddle        : PULONG = nil;
+var
+  size          : ULONG;
+  a             : PMemHeader;
+  p             : PULONG;
+begin
+  // if (SysBase^.LibNode.lib_Version >= 39)
+  if (PLibrary(AOS_ExecBase)^.lib_Version >= 39)
+  then exit(AllocPooled(pool, memSize));
+
+  if ((poolHeader <> nil) and (memSize <> 0)) then
+  begin
+    if (poolHeader^.ThreshSize > memSize) then
+    begin
+      a := PMemHeader(poolHeader^.PuddleList.mlh_Head);
+
+      while true do
+      begin
+        if (a^.mh_Node.ln_Succ <> nil) then
+        begin
+          if (a^.mh_Node.ln_Type <> 0) then
+          begin
+            puddle := PULONG(Allocate(a, memSize));
+            if (puddle <> nil) 
+            then break
+            else a := PMemHeader(a^.mh_Node.ln_Succ);
+          end;
+        end
+        else
+        begin
+          size := poolHeader^.PuddleSize + sizeof(TMemHeader) + 2 * sizeof(ULONG);
+ 
+          puddle := Exec.AllocMem(size, poolHeader^.MemoryFlags);
+          if not (puddle <> nil)
+          then exit(nil);
+ 
+          puddle^ := size; inc(puddle);
+
+          a := PMemHeader(puddle);
+
+          a^.mh_Node.ln_Type    := NT_MEMORY;
+          a^.mh_First           := PMemChunk(PBYTE(a) + sizeof(TMemHeader) + sizeof(PBYTE) );
+          a^.mh_Lower           := a^.mh_First;
+          a^.mh_First^.mc_Next  := nil;
+          a^.mh_First^.mc_Bytes := poolHeader^.PuddleSize;
+          a^.mh_Free            := a^.mh_First^.mc_Bytes;
+          a^.mh_Upper           := PChar(a^.mh_First + a^.mh_Free);
+
+          AddHead(PList(@poolHeader^.PuddleList), @a^.mh_Node);
+
+          puddle := PULONG(Allocate(a, memSize));
+
+          break;
+        end;
+      end;
+
+      {*
+         We do have to clear memory here. It may have been dirtied
+         by somebody using it beforehand.
+      *}
+      if (poolHeader^.MemoryFlags and MEMF_CLEAR <> 0) then
+      begin
+        p := puddle;
+
+        memSize  := memSize + 7;
+        memSize  := memSize shr 3;
+
+        while (memSize <> 0) do
+        begin
+          p^ := 0; inc(p);
+          p^ := 0; inc(p);
+          dec(memSize);
+        end;
+      end;
+    end
+    else
+    begin
+      size := memSize + sizeof(TMinNode) + 2 * sizeof(ULONG);
+
+      puddle := PULONG(AllocMem(size, poolHeader^.MemoryFlags));
+      if (puddle <> nil) then
+      begin
+        puddle^ := size; inc(puddle);
+
+        AddTail(PList(@poolHeader^.PuddleList), PNode(puddle));
+
+        puddle := PULONG(PMinNode(puddle) + 1);
+
+        puddle^ := 0; inc(puddle);
+      end;
+    end;
+  end;
+
+  LibAllocPooled := puddle;
+end;
+
+
+procedure LibFreePooled(pool: APTR; memory: APTR; memSize: ULONG);
+var
+  poolHeader    : PPOOL absolute pool;
+  puddle        : PULONG = nil;
+var
+  size          : ULONG;
+  a             : PMemHeader;
+begin
+  // if (SysBase^.LibNode.lib_Version >= 39) then
+  if (PLibrary(AOS_ExecBase)^.lib_Version >= 39) then
+  begin
+    FreePooled(poolHeader, memory, memSize);
+    exit;
+  end;
+
+  if ((poolHeader <> nil) and (memory <> nil)) then
+  begin
+    puddle := PULONG(PMinNode(memory) - 1) - 1;
+
+    if (poolHeader^.ThreshSize > memSize) then
+    begin
+      a := PMemHeader(@poolHeader^.PuddleList.mlh_Head);
+
+      while true do
+      begin
+        a := PMemHeader(a^.mh_Node.ln_Succ);
+
+        if (a^.mh_Node.ln_Succ = nil)
+        then exit;
+
+        if ((a^.mh_Node.ln_Type <> 0) and (memory >= a^.mh_Lower) and (memory < a^.mh_Upper))
+        then break;
+      end;
+
+      Deallocate(a, memory, memSize);
+
+      if (a^.mh_Free <> poolHeader^.PuddleSize)
+      then exit;
+
+      puddle := PULONG(@a^.mh_Node);
+    end;
+
+    Remove(PNode(puddle));
+
+    dec(puddle);
+    size := puddle^;
+
+    FreeMem(puddle, size);
+  end;
+end;
+
+
+function  LibCreatePool(requirements: ULONG; puddleSize: ULONG; threshSize: ULONG): Pointer; 
+var
+  pool: PPOOL;
+begin
+  if (PLibrary(AOS_ExecBase)^.lib_Version >= 39)
+  then exit(CreatePool(requirements, puddleSize, threshSize));
+
+  begin
+    pool := nil;
+
+    if (threshSize <= puddleSize) then
+    begin
+      pool := PPOOL(AllocMem(sizeof(TPOOL), MEMF_ANY));
+      if (pool <> nil) then
+      begin
+        NEWLIST(@pool^.PuddleList);
+
+        puddleSize := ((puddleSize + 7) and not 7);
+
+        pool^.MemoryFlags := requirements;
+        pool^.PuddleSize  := puddleSize;
+        pool^.ThreshSize  := threshSize;
+      end;
+    end;
+
+    result := APTR(pool);
+  end;
+end;
+
+
+procedure LibDeletePool(pool: APTR);
+var
+  poolHeader    : PPOOL absolute pool;
+var
+  poolMem       : PULONG;
+  size          : ULONG;
+begin
+  if (PLibrary(AOS_ExecBase)^.lib_Version >= 39)
+  then DeletePool(poolHeader)
+  else
+  begin
+    if (poolHeader <> nil) then
+    begin
+
+      poolMem := PULONG(RemHead(PList(@poolHeader^.PuddleList)));
+      while (poolMem <> nil) do
+      begin
+        dec(poolMem);
+        size := poolMem^;
+        FreeMem(poolMem, size);
+
+        poolMem := PULONG(RemHead(PList(@poolHeader^.PuddleList)));
+      end;
+
+      FreeMem(poolHeader, sizeof(TPOOL));
+    end;
+  end;
+end;
+
+
+procedure BeginIO(ioRequest: PIORequest);
+Type
+  TLocalCall = procedure(requester : POINTER; Base: Pointer); cdecl;
+var
+  Call  : TLocalCall;
+  Base  : PDevice;
+begin
+  base := ioRequest^.io_Device;
+  Call := TLocalCall(GetLibAdress(Base, 5));
+  Call(ioRequest, Base);
+end;
+
+
+function  CreateExtIO(port: PMsgPort; iosize: ULONG): PIORequest;
+var
+  ioreq: PIORequest = nil;
+begin
+  if (port <> nil) then
+  begin
+    ioreq := AllocMem(iosize, MEMF_CLEAR or MEMF_PUBLIC);
+    if (ioreq <> nil) then
+    begin
+      ioreq^.io_Message.mn_Node.ln_Type := NT_MESSAGE;
+      ioreq^.io_Message.mn_Length       := iosize;
+      ioreq^.io_Message.mn_ReplyPort    := port;
+    end;
+  end;
+  CreateExtIO := ioreq;
+end;
+
+
+procedure DeleteExtIO(ioreq: PIORequest);
+begin
+  if (ioreq <> nil) then
+  begin
+    ioReq^.io_Message.mn_Node.ln_Type := $FF;
+    ioReq^.io_Device                  := pDevice(-1);
+    ioReq^.io_Unit                    := pUnit(-1);
+    ExecFreeMem(ioreq, ioreq^.io_Message.mn_Length);
+  end
+end;
+
+
+function  CreateStdIO(port: PMsgPort): PIOStdReq;
+begin
+  CreateStdIO := PIOStdReq(CreateExtIO(port, sizeof(TIOStdReq)))
+end;
+
+
+procedure DeleteStdIO(io: PIOStdReq);
+begin
+  DeleteExtIO(PIORequest(io))
+end;
+
+
+// AROS: this function was located in trinity.pas
+function  CreatePort(name: STRPTR; pri: LONG): PMsgPort;
+Var
+  mp: PMsgPort;
+begin
+  mp := CreateMsgPort;
+
+  if (mp <> nil) then
+  begin
+    mp^.mp_Node.ln_Name := name;
+    mp^.mp_Node.ln_Pri  := pri;
+
+    if (name <> nil) 
+    then AddPort(mp);
+  end;
+  CreatePort := mp;
+end;
+
+
+// AROS: this function was located in trinity.pas
+procedure DeletePort(mp: PMsgPort);
+begin
+  if (mp^.mp_Node.ln_Name <> nil)
+  then RemPort(mp);
+
+  DeleteMsgPort(mp);
+end;
+
+
+function  CreateTask(name: STRPTR; pri: LONG; initpc: APTR; stacksize: ULONG): PTask;
+begin
+  CreateTask := NewCreateTask(
+  [
+    LONG(TASKTAG_NAME)        , name,
+    LONG(TASKTAG_PRI)         , pri,
+    LONG(TASKTAG_PC)          , initpc,
+    LONG(TASKTAG_STACKSIZE)   , stacksize,
+    TAG_END
+  ]);
+end;
+
+
+procedure DeleteTask(task: PTask);
+begin
+  RemTask(task);
+end;
+
+
+procedure NewList(list: PList); inline;
+begin
+  if Assigned(List) then
+  begin
+    List^.lh_TailPred := PNode(List);
+    List^.lh_Tail := nil;
+    List^.lh_Head := @List^.lh_Tail;
+  end;
+end;
+
+
+procedure MergeSortList(l: PMinList; compare: TSortListCompareFunc; data: Pointer);
+begin
+  {$WARNING: MergeSortList() not implemented}
+end;
+
+
+function  NewRawDoFmt(const fomtString: STRPTR; PutChProc: TNewPutCharProc; PutChData: APTR; valueList: PLong): STRPTR;
+var
+  retVal: STRPTR = nil;
+begin
+  {$WARNING: NewRawDoFmt() not implemented}
+  // requires generic va_list solution ?
+  NewRawDoFmt := retVal;
 end;
 
 
