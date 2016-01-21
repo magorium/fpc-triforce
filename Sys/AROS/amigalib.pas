@@ -56,6 +56,7 @@ type
   procedure NewList(list: PList);
   function  NewRawDoFmt(const fomtString: STRPTR; PutChProc: TNewPutCharProc; PutChData: APTR; valueList: PLong): STRPTR;
   function  RangeRand(maxValue: ULONG): ULONG;
+  function  TimeDelay(timerUnit: LONG; Seconds: ULONG; MicroSeconds: ULONG): LONG;
 
 
 
@@ -63,7 +64,7 @@ implementation
 
 
 uses
-  ArosLib, Utility,
+  ArosLib, Timer, Utility,
   tagsarray;
 
 
@@ -641,6 +642,55 @@ begin
   {$WARNING: NewRawDoFmt() not implemented}
   // requires generic va_list solution ?
   NewRawDoFmt := retVal;
+end;
+
+
+
+// ###########################################################################
+// ###
+// ###    Timer
+// ###
+// ###########################################################################
+
+
+
+function  TimeDelay(timerUnit: LONG; Seconds: ULONG; MicroSeconds: ULONG): LONG;
+var
+  tr    : TTimeRequest;
+  mp    : TMsgPort;
+  error : UBYTE = 0;
+begin
+  //* Create a message port */
+  mp.mp_Node.ln_Type := NT_MSGPORT;
+  mp.mp_Node.ln_Pri := 0;
+  mp.mp_Node.ln_Name := nil;
+  mp.mp_Flags := PA_SIGNAL;
+  mp.mp_SigTask := FindTask(nil);
+  mp.mp_SigBit := SIGB_SINGLE;
+  NEWLIST(@mp.mp_MsgList);
+
+  tr.tr_node.io_Message.mn_Node.ln_Type := NT_MESSAGE;
+  tr.tr_node.io_Message.mn_Node.ln_Pri := 0;
+  tr.tr_node.io_Message.mn_Node.ln_Name := nil;
+  tr.tr_node.io_Message.mn_ReplyPort := @mp;
+  tr.tr_node.io_Message.mn_Length := sizeof(TTimeRequest);
+
+  SetSignal(0, SIGF_SINGLE);
+
+  if (OpenDevice('timer.device', timerUnit, PIORequest(@tr), 0) = 0) then
+  begin
+    tr.tr_node.io_Command := TR_ADDREQUEST;
+    tr.tr_node.io_Flags := 0;
+    tr.tr_time.tv_secs := Seconds;
+    tr.tr_time.tv_micro := MicroSeconds;
+
+    DoIO(PIORequest(@tr));
+
+    CloseDevice(PIORequest(@tr));
+    error := 1;
+  end;
+
+  TimeDelay := error;
 end;
 
 
