@@ -46,6 +46,7 @@ type
   procedure DeletePort(mp: PMsgPort);
   procedure DeleteStdIO(io: PIOStdReq);
   procedure DeleteTask(task: PTask);
+  function  ErrorOutput: BPTR;
   function  FastRand(seed: ULONG): ULONG;
   function  LibAllocAligned(memSize: APTR; requirements: ULONG; alignBytes: IPTR): APTR;
   function  LibAllocPooled(pool: APTR; memSize: ULONG): APTR;
@@ -56,15 +57,15 @@ type
   procedure NewList(list: PList);
   function  NewRawDoFmt(const fomtString: STRPTR; PutChProc: TNewPutCharProc; PutChData: APTR; valueList: PLong): STRPTR;
   function  RangeRand(maxValue: ULONG): ULONG;
+  function  SelectErrorOutput(fh: BPTR): BPTR;
   function  TimeDelay(timerUnit: LONG; Seconds: ULONG; MicroSeconds: ULONG): LONG;
-
 
 
 implementation
 
 
 uses
-  ArosLib, Timer, Utility,
+  ArosLib, AmigaDOS, Timer, Utility,
   tagsarray;
 
 
@@ -691,6 +692,41 @@ begin
   end;
 
   TimeDelay := error;
+end;
+
+
+
+// ###########################################################################
+// ###
+// ###    DOS
+// ###
+// ###########################################################################
+
+
+
+function  ErrorOutput: BPTR;
+var
+  me: PProcess;
+begin
+  me := PProcess(FindTask(nil));
+  
+  ErrorOutput := me^.pr_CES;
+end;
+
+
+function  SelectErrorOutput(fh: BPTR): BPTR;
+var
+  old: BPTR;
+  me : PProcess;
+begin
+  // Get pointer to process structure
+  me := PProcess(FindTask(nil));
+
+  // Nothing spectacular
+  old := me^.pr_CES;
+  me^.pr_CES := fh;
+  
+  SelectErrorOutput := old;
 end;
 
 
