@@ -23,21 +23,33 @@ interface
 
 
 uses
-  Exec;
+  Exec, AGraphics;
 
 
 type
+  PIsrvstr = ^TIsrvstr;
+  TIsrvstr = record
+    is_Node : tNode;
+    Iptr    : pIsrvstr;     { passed to srvr by os }
+    code    : Pointer;
+    ccode   : Pointer;
+    Carg    : Pointer;
+  end;
+
+
   TNewPutCharProc      = procedure;
   TSortListCompareFunc = function(n1: PMinNode; n2: PMinNode; data: pointer): integer;
 
 
   function  ACrypt(buffer: PChar; password: PChar; username: PChar): PChar;
+  procedure AddTOF(i: PIsrvstr; p: APTR; a: APTR); unimplemented;
   function  ArosInquire(Const tags: Array of Const): ULONG;
   function  AsmAllocPooled(poolHeader: APTR; memSize: ULONG): APTR;
   function  AsmCreatePool(MemFlags: ULONG; PuddleSize: ULONG; ThreshSize: ULONG): APTR;
   procedure AsmDeletePool(poolHeader: APTR);
   procedure AsmFreePooled(poolHeader: APTR; Memory: APTR; MemSize: ULONG);
   procedure BeginIO(ioRequest: PIORequest);
+  function  CopyRegion(region: PRegion): PRegion;
   function  CreateExtIO(port: PMsgPort; iosize: ULONG): PIORequest;
   function  CreatePort(name: STRPTR; pri: LONG): PMsgPort;
   function  CreateStdIO(port: PMsgPort): PIOStdReq;
@@ -56,7 +68,9 @@ type
   procedure MergeSortList(l: PMinList; compare: TSortListCompareFunc; data: Pointer);
   procedure NewList(list: PList);
   function  NewRawDoFmt(const fomtString: STRPTR; PutChProc: TNewPutCharProc; PutChData: APTR; valueList: PLong): STRPTR;
+  function  NewRectRegion(MinX: SmallInt; MinY: SmallInt; MaxX: SmallInt; MaxY: SmallInt): PRegion;
   function  RangeRand(maxValue: ULONG): ULONG;
+  procedure RemTOF(i: PIsrvstr); unimplemented;
   function  SelectErrorOutput(fh: BPTR): BPTR;
   function  TimeDelay(timerUnit: LONG; Seconds: ULONG; MicroSeconds: ULONG): LONG;
 
@@ -727,6 +741,66 @@ begin
   me^.pr_CES := fh;
   
   SelectErrorOutput := old;
+end;
+
+
+
+// ###########################################################################
+// ###
+// ###    Graphics
+// ###
+// ###########################################################################
+
+
+
+procedure AddTOF(i: PIsrvstr; p: APTR; a: APTR);
+begin
+  {$WARNING: AddTOF() not implemented}
+end;
+
+
+procedure RemTOF(i: PIsrvstr);
+begin
+  {$WARNING: RemTOF() not implemented}
+end;
+
+
+function  CopyRegion(region: PRegion): PRegion;
+var
+  nreg: PRegion;
+begin
+  nreg := NewRegion;
+  if (nreg <> nil) then
+  begin
+    if (OrRegionRegion(region, nreg))
+    then exit(nreg);
+    
+    DisposeRegion(nreg);
+  end;
+  CopyRegion := nil;
+end;
+
+
+function  NewRectRegion(MinX: SmallInt; MinY: SmallInt; MaxX: SmallInt; MaxY: SmallInt): PRegion;
+var
+  region : PRegion;
+  rect   : AGraphics.TRectangle;
+  res    : LongBool;
+begin
+  region := NewRegion;
+  
+  if (region <> nil) then
+  begin
+    // rect := (MinX, MinY, MaxX, MaxY);
+    rect.MinX := MinX;
+    rect.MinY := MinY;
+    rect.MaxX := MaxX;
+    rect.MaxY := MaxY;
+    res  := OrRectRegion(region, @rect);
+    if res then exit(region);
+    DisposeRegion(region);
+  end;
+  NewRectRegion := nil;
 end;
 
 
