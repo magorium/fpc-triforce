@@ -37,7 +37,7 @@ type
   end;
 
 
-  TNewPutCharProc      = procedure;
+  TNewPutCharProc      = procedure;  
   TSortListCompareFunc = function(n1: PMinNode; n2: PMinNode; data: pointer): integer;
 
 
@@ -65,6 +65,7 @@ type
   function  LibCreatePool(requirements: ULONG; puddleSize: ULONG; threshSize: ULONG): Pointer; 
   procedure LibDeletePool(pool: APTR);
   procedure LibFreePooled(pool: APTR; memory: APTR; memSize: ULONG);
+  function  LockBitMapTags(handle: APTR; const tags: Array of const): APTR;
   procedure MergeSortList(l: PMinList; compare: TSortListCompareFunc; data: Pointer);
   procedure NewList(list: PList);
   function  NewRawDoFmt(const fomtString: STRPTR; PutChProc: TNewPutCharProc; PutChData: APTR; valueList: PLong): STRPTR;
@@ -73,14 +74,15 @@ type
   procedure RemTOF(i: PIsrvstr); unimplemented;
   function  SelectErrorOutput(fh: BPTR): BPTR;
   function  TimeDelay(timerUnit: LONG; Seconds: ULONG; MicroSeconds: ULONG): LONG;
+  procedure UnlockBitMapTags(handle: BPTR; const tags: Array of const);
 
 
 implementation
 
 
 uses
-  ArosLib, AmigaDOS, Timer, Utility,
-  tagsarray;
+  ArosLib, AmigaDOS, CyberGraphics, Timer, Utility,
+  tagsarray, longarray;
 
 
 
@@ -801,6 +803,35 @@ begin
     DisposeRegion(region);
   end;
   NewRectRegion := nil;
+end;
+
+
+
+// ###########################################################################
+// ###
+// ###    CyberGraphics
+// ###
+// ###########################################################################
+
+
+
+function  LockBitMapTags(handle: APTR; const tags: Array of const): APTR;
+var
+  ArgList: TArgList;
+begin
+  {$WARNING: LockBitMapTag(s)List not implemented in ABIv0}
+  AddArguments(ArgList, tags);
+  LockBitMapTags := LockBitMapTagList(handle, @(ArgList[0]));
+end;
+
+
+procedure UnlockBitMapTags(handle: BPTR; const tags: Array of const);
+var
+  ArgList: TArgList;
+begin
+  {$WARNING: UnLockBitMapTag(s)List not implemented in ABIv0}
+  AddArguments(ArgList, Tags);
+  UnLockBitMapTagList(handle, @(ArgList[0]));
 end;
 
 
