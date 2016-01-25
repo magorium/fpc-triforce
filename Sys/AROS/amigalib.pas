@@ -23,7 +23,7 @@ interface
 
 
 uses
-  Exec, AGraphics;
+  Exec, AGraphics, Intuition, Utility;
 
 
 type
@@ -37,7 +37,7 @@ type
   end;
 
 
-  TNewPutCharProc      = procedure;  
+  TNewPutCharProc      = procedure;
   TSortListCompareFunc = function(n1: PMinNode; n2: PMinNode; data: pointer): integer;
 
 
@@ -49,6 +49,10 @@ type
   procedure AsmDeletePool(poolHeader: APTR);
   procedure AsmFreePooled(poolHeader: APTR; Memory: APTR; MemSize: ULONG);
   procedure BeginIO(ioRequest: PIORequest);
+  function  CallHook(hook: PHook; obj: APTR; const params: Array of const): IPTR;
+  function  CallHookA(hook: PHook; obj: APTR; param: APTR): IPTR;
+  function  CoerceMethod(cl: PIClass; Obj: PObject_; MethodID: IPTR; const Args: array of const): IPTR;
+  function  CoerceMethodA(cl: PIClass; Obj: PObject_; Message: APTR): IPTR;
   function  CopyRegion(region: PRegion): PRegion;
   function  CreateExtIO(port: PMsgPort; iosize: ULONG): PIORequest;
   function  CreatePort(name: STRPTR; pri: LONG): PMsgPort;
@@ -58,8 +62,15 @@ type
   procedure DeletePort(mp: PMsgPort);
   procedure DeleteStdIO(io: PIOStdReq);
   procedure DeleteTask(task: PTask);
+  function  DoMethod(obj: PObject_; MethodID: IPTR; msgTags: array of const): IPTR;
+  function  DoMethodA(obj: PObject_; Message: PMsg): IPTR;
+  function  DoSuperMethod(cl: PIClass; obj: PObject_; MethodID: ULONG; const msgTags: array of const): IPTR;
+  function  DoSuperMethodA(cl: PIClass; obj: PObject_; message: PMsg): IPTR;
+  function  DoSuperNewTagList(cl: PIClass; obj: PObject_; gadgetInfo: PGadgetInfo; tagList: PTagItem): IPTR;
+  function  DoSuperNewTags(cl: PIClass; obj: PObject_; gadgetInfo: PGadgetInfo; const tags: array of const): IPTR;
   function  ErrorOutput: BPTR;
   function  FastRand(seed: ULONG): ULONG;
+  function  HookEntry(hook: PHook; obj: APTR; param: APTR): IPTR;
   function  LibAllocAligned(memSize: APTR; requirements: ULONG; alignBytes: IPTR): APTR;
   function  LibAllocPooled(pool: APTR; memSize: ULONG): APTR;
   function  LibCreatePool(requirements: ULONG; puddleSize: ULONG; threshSize: ULONG): Pointer; 
@@ -73,6 +84,8 @@ type
   function  RangeRand(maxValue: ULONG): ULONG;
   procedure RemTOF(i: PIsrvstr); unimplemented;
   function  SelectErrorOutput(fh: BPTR): BPTR;
+  function  SetSuperAttrs(cl: PIClass; Obj: PObject_; Tags: array of const): IPTR;
+  function  SetSuperAttrsA(cl: PIClass; Obj: PObject_; TagList: PTagItem): IPTR;
   function  TimeDelay(timerUnit: LONG; Seconds: ULONG; MicroSeconds: ULONG): LONG;
   procedure UnlockBitMapTags(handle: BPTR; const tags: Array of const);
 
@@ -81,7 +94,7 @@ implementation
 
 
 uses
-  ArosLib, AmigaDOS, CyberGraphics, Timer, Utility,
+  ArosLib, AmigaDOS, CyberGraphics, Timer,
   tagsarray, longarray;
 
 
@@ -832,6 +845,161 @@ begin
   {$WARNING: UnLockBitMapTag(s)List not implemented in ABIv0}
   AddArguments(ArgList, Tags);
   UnLockBitMapTagList(handle, @(ArgList[0]));
+end;
+
+
+
+// ###########################################################################
+// ###
+// ###    Intuition
+// ###
+// ###########################################################################
+
+
+
+function  MACRO_CALLHOOKPKT(hook: PHook; object_: APTR; msg: APTR): IPTR;
+var
+  FuncPtr: THookFunctionProc; 
+begin
+  MACRO_CALLHOOKPKT := 0;
+  if (hook = nil) or (object_ = nil) or (msg = nil) then Exit;
+  if (hook^.h_Entry = 0) then Exit;
+  FuncPtr := THookFunctionProc(Hook^.h_Entry);
+  MACRO_CALLHOOKPKT := FuncPtr(hook, object_, msg);
+end;
+
+
+function  HookEntry(hook: PHook; obj: APTR; param: APTR): IPTR;
+begin
+  {$WARNING: HookEntry() not implemented}
+  HookEntry := 0;
+end;
+
+
+function  CallHookA(hook: PHook; obj: APTR; param: APTR): IPTR;
+begin
+  CallHookA := MACRO_CALLHOOKPKT(hook, obj, param);
+end;
+
+
+function  CallHook(hook: PHook; obj: APTR; const params: Array of const): IPTR;
+begin
+  CallHook := MACRO_CALLHOOKPKT(hook, obj , ReadInLongs(params));
+end;
+
+
+// AROS: this function was located in intuition.pas
+// Note: AROS' implementation adds asserts to obj, cl and message)
+function  CoerceMethodA(cl: PIClass; Obj: PObject_; Message: APTR): IPTR;
+begin
+  if (obj = nil) or (cl = nil) then Exit(0);
+  
+  CoerceMethodA := MACRO_CALLHOOKPKT(PHook(cl), Obj, Message);
+end;
+
+
+// AROS: this function was located in intuition.pas
+(*
+function  CoerceMethod(cl: PIClass; Obj: PObject_; MethodID: IPTR; const Args: array of const): IPTR;
+var
+  ArgList: TArgList;
+begin
+  AddArguments(ArgList,[MethodID]);
+  AddArguments(ArgList, Args);
+  CoerceMethod := CoerceMethodA(cl, Obj, @(ArgList[0])); 
+end;
+*)
+// AROS: this function was located in AROS sources trunk
+function  CoerceMethod(cl: PIClass; Obj: PObject_; MethodID: IPTR; const Args: array of const): IPTR;
+var
+  ArgList: TArgList;
+begin
+  if (obj = nil) or (cl = nil) then Exit(0);  
+
+  AddArguments(ArgList,[MethodID]);
+  AddArguments(ArgList, Args);
+  CoerceMethod := MACRO_CALLHOOKPKT(PHook(cl), Obj, @(ArgList[0]));
+end;
+
+
+function  DoMethodA(obj: PObject_; Message: PMsg): IPTR;
+begin
+  if (obj = nil) then Exit(0);
+  // AROS implements assertions on obj and message
+  DoMethodA := MACRO_CALLHOOKPKT(PHook(OCLASS(obj)), obj, message);
+end;
+
+
+function  DoMethod(obj: PObject_; MethodID: IPTR; msgTags: array of const): IPTR;
+var
+  ArgList: TArgList;
+begin
+  // AROS implements assertion on obj
+  if (obj = nil) then Exit(0);
+  AddArguments(ArgList, [MethodID]);
+  AddArguments(ArgList, msgTags);
+  DoMethod := MACRO_CALLHOOKPKT(PHook(OCLASS(obj)), obj, @(ArgList[0]));
+end;
+
+
+function  DoSuperMethodA(cl: PIClass; obj: PObject_; message: PMsg): IPTR;
+begin
+  if (cl = nil) or (obj = nil) then Exit(0);
+  DoSuperMethodA := MACRO_CALLHOOKPKT(PHook(cl^.cl_Super), obj, message);
+end;
+
+
+function  DoSuperMethod(cl: PIClass; obj: PObject_; MethodID: ULONG; const msgTags: array of const): IPTR;
+var
+  ArgList: TArgList;
+begin
+  if (cl = nil) or (obj = nil) then Exit(0);
+
+  AddArguments(ArgList, [MethodID]);
+  AddArguments(ArgList, msgTags);
+  DoSuperMethod := MACRO_CALLHOOKPKT(PHook(cl^.cl_Super), Obj, @(ArgList[0]));
+end;
+
+
+function  DoSuperNewTagList(cl: PIClass; obj: PObject_; gadgetInfo: PGadgetInfo; tagList: PTagItem): IPTR;
+begin
+  if (cl = nil) or (obj = nil) then Exit(0);
+  DoSuperNewTagList := DoSuperMethod(cl, obj, OM_NEW, [tagList, gadgetInfo]);
+end;
+
+
+function  DoSuperNewTags(cl: PIClass; obj: PObject_; gadgetInfo: PGadgetInfo; const tags: array of const): IPTR;
+var
+  ArgList: TArgList;
+begin
+  if (cl = nil) or (obj = nil) then Exit(0);
+
+  AddArguments(ArgList, tags);
+  DoSuperNewTags := DoSuperNewTagList(cl, obj, gadgetInfo, @(ArgList[0]));
+end;
+
+
+function  SetSuperAttrsA(cl: PIClass; Obj: PObject_; TagList: PTagItem): IPTR;
+var
+  ops: TopSet;
+begin
+  ops.MethodID := OM_SET;
+  ops.ops_AttrList := TagList;
+  ops.ops_GInfo := nil;
+  Result := DoSuperMethodA(cl, obj, @ops);
+end;
+
+
+function  SetSuperAttrs(cl: PIClass; Obj: PObject_; Tags: array of const): IPTR;
+var
+  TagList: TTagsList;
+  ops: TopSet;
+begin
+  AddTags(TagList, Tags);
+  ops.MethodID := OM_SET;
+  ops.ops_AttrList := GetTagPtr(TagList);
+  ops.ops_GInfo := nil;
+  Result := DoSuperMethodA(cl, obj, @ops);
 end;
 
 
