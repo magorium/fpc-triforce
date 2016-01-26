@@ -43,6 +43,10 @@ type
 
   function  ACrypt(buffer: PChar; password: PChar; username: PChar): PChar;
   procedure AddTOF(i: PIsrvstr; p: APTR; a: APTR); unimplemented;
+  procedure ArgArrayDone;
+  function  ArgArrayInit(argc: ULONG; argv: PPChar): PPChar;
+  function  ArgInt(tt: PPChar; entry: STRPTR; defaultval: LongInt): LongInt;
+  function  ArgString(tt: PPChar; entry: STRPTR; defaultString: STRPTR): STRPTR;
   function  ArosInquire(Const tags: Array of Const): ULONG;
   function  AsmAllocPooled(poolHeader: APTR; memSize: ULONG): APTR;
   function  AsmCreatePool(MemFlags: ULONG; PuddleSize: ULONG; ThreshSize: ULONG): APTR;
@@ -94,8 +98,9 @@ implementation
 
 
 uses
-  ArosLib, AmigaDOS, CyberGraphics, Timer,
-  tagsarray, longarray;
+  ArosLib, AmigaDOS, CyberGraphics, Workbench, Icon, Timer,
+  tagsarray, longarray,
+  SysUtils;                         // yes, this dependency needs to disappear.;
 
 
 
@@ -1000,6 +1005,74 @@ begin
   ops.ops_AttrList := GetTagPtr(TagList);
   ops.ops_GInfo := nil;
   Result := DoSuperMethodA(cl, obj, @ops);
+end;
+
+
+
+// ###########################################################################
+// ###
+// ###    Tooltypes
+// ###
+// ###########################################################################
+
+
+
+var
+  __alib_dObject : PDiskObject = nil;   //* Used for reading tooltypes */
+
+
+function  ArgArrayInit(argc: ULONG; argv: PPChar): PPChar;
+var
+  olddir    : BPTR;
+  startup   : PWBStartup;
+begin
+  startup := PWBStartup(argv);
+  
+  if (argc <> 0)
+  then exit(argv);
+
+  if (startup^.sm_NumArgs >= 1) then
+  begin
+    olddir := CurrentDir(PWBArg(startup^.sm_ArgList)[0].wa_Lock);
+    __alib_dObject := GetDiskObject(PWBArg(startup^.sm_ArgList)[0].wa_Name);
+    CurrentDir(olddir);
+  end
+  else
+    exit(nil);
+
+  if (__alib_dObject = nil)
+  then exit(nil);
+  
+  ArgArrayInit := PPChar(__alib_dObject^.do_ToolTypes);
+end;
+
+
+procedure ArgArrayDone;
+begin
+  if (__alib_dObject <> nil)
+  then FreeDiskObject(__alib_dObject);
+end;
+
+
+function  ArgInt(tt: PPChar; entry: STRPTR; defaultval: LongInt): LongInt;
+var
+  match : STRPTR;
+begin
+  match := FindToolType(tt, entry);
+  if match = nil
+  then ArgInt := defaultval
+  else ArgInt := StrToIntDef(match, 0);
+end;
+
+
+function  ArgString(tt: PPChar; entry: STRPTR; defaultString: STRPTR): STRPTR;
+var
+  match: STRPTR;
+begin
+  match := FindToolType(tt, entry);
+  if (match = nil)
+  then ArgString := defaultstring
+  else ArgString := match;
 end;
 
 
