@@ -23,7 +23,7 @@ interface
 
 
 uses
-  Exec, AGraphics, Intuition, Utility;
+  Exec, AGraphics, Intuition, InputEvent, KeyMap, Utility;
 
 
 type
@@ -74,7 +74,10 @@ type
   function  DoSuperNewTags(cl: PIClass; obj: PObject_; gadgetInfo: PGadgetInfo; const tags: array of const): IPTR;
   function  ErrorOutput: BPTR;
   function  FastRand(seed: ULONG): ULONG;
+  procedure FreeIEvents(ie: PInputEvent);
   function  HookEntry(hook: PHook; obj: APTR; param: APTR): IPTR;
+  function  InvertString(str: STRPTR; km: PKeyMap): PInputEvent;
+  function  InvertStringForwd(str: STRPTR; km: PKeyMap): PInputEvent;
   function  LibAllocAligned(memSize: APTR; requirements: ULONG; alignBytes: IPTR): APTR;
   function  LibAllocPooled(pool: APTR; memSize: ULONG): APTR;
   function  LibCreatePool(requirements: ULONG; puddleSize: ULONG; threshSize: ULONG): Pointer; 
@@ -98,7 +101,7 @@ implementation
 
 
 uses
-  ArosLib, AmigaDOS, CyberGraphics, Workbench, Icon, Timer,
+  ArosLib, AmigaDOS, CyberGraphics, Workbench, Icon, Commodities, Timer,
   tagsarray, longarray,
   SysUtils;                         // yes, this dependency needs to disappear.;
 
@@ -1075,6 +1078,167 @@ begin
   else ArgString := match;
 end;
 
+
+
+// ###########################################################################
+// ###
+// ###    Commodities support, InputEvent
+// ###
+// ###########################################################################
+
+
+
+const
+  IESUBCLASS_NEWTABLET  = $03;
+
+
+procedure FreeIEvents(ie: PInputEvent);
+var
+  next: PInputEvent;
+begin
+  next := ie;
+  
+  while (next <> nil) do
+  begin
+    next := ie^.ie_NextEvent;
+
+    if (
+      ( ie^.ie_Class = IECLASS_NEWPOINTERPOS ) and
+      (
+        (ie^.ie_SubClass = IESUBCLASS_TABLET) or
+        (ie^.ie_SubClass = IESUBCLASS_NEWTABLET) or
+        (ie^.ie_SubClass = IESUBCLASS_PIXEL)
+      )
+    )
+    // then FreeVec(ie^.ie_EventAddress);
+    then FreeVec(ie^.ie_position.ie_addr);
+
+    FreeMem(ie, sizeof(TInputEvent));
+    ie := next;
+  end;
+end;
+
+
+function  InvertStringForwd(str: STRPTR; km: PKeyMap): PInputEvent;
+var
+  ieChain   : PInputEvent = nil;
+  ie        : PInputEvent;
+  first     : PInputEvent = nil;
+  ansiCode  : UBYTE;
+  start     : PChar;
+var
+  ix        : TIX;
+  err       : LONG;
+
+begin
+  while (str <> nil) and (str^ <> #0) do
+  begin
+    ie := AllocMem(sizeof(TInputEvent), MEMF_PUBLIC or MEMF_CLEAR);
+    if (ie = nil) then
+    begin
+      if (first <> nil)
+      then FreeIEvents(first);
+      exit(nil);;
+    end;
+         
+    if (first = nil)
+    then first := ie;
+         
+    if (ieChain <> nil)
+    then ieChain^.ie_NextEvent := ie;            
+         
+    ieChain := ie;
+        
+    ie^.ie_Class := IECLASS_RAWKEY;
+    //ie^.ie_EventAddress := nil;
+    ie^.ie_position.ie_addr := nil;
+
+    case (str^) of
+      '\' :
+      begin
+        inc(str);
+        case (str^) of
+          't': ansiCode := Ord(#09);  // tab
+          'r', 
+          'n': ansiCode := Ord(#10);
+          '\': ansiCode := Ord('\');
+          else 
+               //* FIXME: What to do if "\x" comes? */
+               //* stegerg: This? */
+               ansiCode := Ord(str^);
+        end;
+  
+        if (InvertKeyMap(ansiCode, ie, km) = FALSE) then
+        begin
+          FreeIEvents(first);
+          exit(nil);
+        end;
+
+        inc(str);
+      end;
+
+      '<' :
+      begin
+        inc(str);
+        start := str;
+
+        while (str^ <> #0) and (str^ <> '>') do inc(str);
+        begin
+          ix := default(TIX);
+
+          str^ := #0;
+          err := ParseIX(start, @ix);
+          str^ := '>'; inc(str);
+
+          if (err < 0) then
+          begin
+            FreeIEvents(first);
+            exit(nil);
+          end;
+
+          ie^.ie_Class     := ix.ix_Class;
+          ie^.ie_Code      := ix.ix_Code;
+          ie^.ie_Qualifier := ix.ix_Qualifier;
+        end;
+      end;
+
+      else
+      begin
+        if (InvertKeyMap(Ord(str^), ie, km) = FALSE) then
+        begin
+          inc(str);
+          FreeIEvents(first);
+          exit(nil);
+        end;
+        inc(str);
+      end;
+    end;
+  end;
+  InvertStringForwd := first;
+end;
+
+
+function  InvertString(str: STRPTR; km: PKeyMap): PInputEvent;
+var
+  first, second, third, fourth: PInputEvent;
+begin
+  first := InvertStringForwd(str, km);
+
+  if (first <> nil) then
+  begin
+    fourth := first;
+    third := first^.ie_NextEvent;
+    while (third <> nil) do
+    begin
+      second := first;
+      first := third;
+      third := first^.ie_NextEvent;
+      first^.ie_NextEvent := second;
+    end;
+    fourth^.ie_NextEvent := nil;
+  end;
+  InvertString := first;
+end;
 
 
 end.
