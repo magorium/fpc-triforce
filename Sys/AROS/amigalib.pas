@@ -23,7 +23,7 @@ interface
 
 
 uses
-  Exec, AGraphics, Intuition, InputEvent, KeyMap, Utility;
+  Exec, AGraphics, Intuition, Commodities, InputEvent, KeyMap, Utility;
 
 
 type
@@ -62,6 +62,12 @@ type
   function  CreatePort(name: STRPTR; pri: LONG): PMsgPort;
   function  CreateStdIO(port: PMsgPort): PIOStdReq;
   function  CreateTask(name: STRPTR; pri: LONG; initpc: APTR; stacksize: ULONG): PTask;
+  function  CxCustom(action: Pointer; id: LONG): PCxObj; 
+  function  CxDebug(id: LONG): PCxObj;
+  function  CxFilter(description: STRPTR): PCxObj;
+  function  CxSender(port: PMsgPort; id: LONG): PCxObj;
+  function  CxSignal(task: PTask; signal: LONG): PCxObj;
+  function  CxTranslate(ie: PInputEvent): PCxObj;
   procedure DeleteExtIO(ioreq: PIORequest);
   procedure DeletePort(mp: PMsgPort);
   procedure DeleteStdIO(io: PIOStdReq);
@@ -76,6 +82,7 @@ type
   function  FastRand(seed: ULONG): ULONG;
   procedure FreeIEvents(ie: PInputEvent);
   function  HookEntry(hook: PHook; obj: APTR; param: APTR): IPTR;
+  function  HotKey(description: STRPTR; port: PMsgPort; id: LONG): PCxObj;
   function  InvertString(str: STRPTR; km: PKeyMap): PInputEvent;
   function  InvertStringForwd(str: STRPTR; km: PKeyMap): PInputEvent;
   function  LibAllocAligned(memSize: APTR; requirements: ULONG; alignBytes: IPTR): APTR;
@@ -101,7 +108,7 @@ implementation
 
 
 uses
-  ArosLib, AmigaDOS, CyberGraphics, Workbench, Icon, Commodities, Timer,
+  ArosLib, AmigaDOS, CyberGraphics, Workbench, Icon, Timer,
   tagsarray, longarray,
   SysUtils;                         // yes, this dependency needs to disappear.;
 
@@ -1238,6 +1245,91 @@ begin
     fourth^.ie_NextEvent := nil;
   end;
   InvertString := first;
+end;
+
+
+
+// ###########################################################################
+// ###
+// ###    Commodities
+// ###
+// ###########################################################################
+
+
+
+// AROS: this function/macro was located in commodities.pas
+function  CxCustom(action: Pointer; id: LONG): PCxObj;
+begin
+  CxCustom := CreateCxObj(LONG(CX_CUSTOM), IPTR(action), LONG(id));
+end;
+
+
+// AROS: this function/macro was located in commodities.pas
+function  CxDebug(id: LONG): PCxObj;
+begin
+  CxDebug := CreateCxObj(LONG(CX_DEBUG), IPTR(id), 0);
+end;
+
+
+// AROS: this function/macro was located in commodities.pas
+function  CxFilter(description: STRPTR): PCxObj;
+begin
+  CxFilter := CreateCxObj(LONG(CX_FILTER), IPTR(description), 0);
+end;
+
+
+// AROS: this function/macro was located in commodities.pas
+function  CxSender(port: PMsgPort; id: LONG): PCxObj;
+begin 
+  CxSender := CreateCxObj(LONG(CX_SEND), IPTR(port), LONG(id));
+end;
+
+
+// AROS: this function/macro was located in commodities.pas
+function  CxSignal(task: PTask; signal: LONG): PCxObj;
+begin 
+  CxSignal := CreateCxObj(LONG(CX_SIGNAL), IPTR(task), LONG(signal));
+end;
+
+
+// AROS: this function/macro was located in commodities.pas
+function  CxTranslate(ie: PInputEvent): PCxObj;
+begin
+  CxTranslate := CreateCxObj(LONG(CX_TRANSLATE), IPTR(ie), 0);
+end;
+
+
+function  HotKey(description: STRPTR; port: PMsgPort; id: LONG): PCxObj;
+var
+  filter        : PCxObj;       //* The objects making up the hotkey */
+  sender        : PCxObj;       //* functionality... */
+  translator    : PCxObj;
+begin
+  filter := CxFilter(description);
+  
+  if (filter = nil)
+  then exit(nil);
+
+  sender := CxSender(port, id);
+  if (sender = nil) then
+  begin
+    DeleteCxObj(filter);
+    exit(nil);
+  end;
+
+  AttachCxObj(filter, sender);
+
+  //* Create the commodities equivalent of NIL: */
+  translator := CxTranslate(nil);
+  if (translator = nil) then
+  begin
+    DeleteCxObjAll(filter);
+    exit(nil);
+  end;
+
+  AttachCxObj(filter, translator);
+
+  HotKey := filter;
 end;
 
 
