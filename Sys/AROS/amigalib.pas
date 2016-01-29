@@ -23,7 +23,7 @@ interface
 
 
 uses
-  Exec, AGraphics, Intuition, Commodities, InputEvent, KeyMap, Utility;
+  Exec, AGraphics, Intuition, Commodities, InputEvent, KeyMap, Rexx, Utility;
 
 
 type
@@ -55,6 +55,7 @@ type
   procedure BeginIO(ioRequest: PIORequest);
   function  CallHook(hook: PHook; obj: APTR; const params: Array of const): IPTR;
   function  CallHookA(hook: PHook; obj: APTR; param: APTR): IPTR;
+  function  CheckRexxMsg(msg: PRexxMsg): LongBool;
   function  CoerceMethod(cl: PIClass; Obj: PObject_; MethodID: IPTR; const Args: array of const): IPTR;
   function  CoerceMethodA(cl: PIClass; Obj: PObject_; Message: APTR): IPTR;
   function  CopyRegion(region: PRegion): PRegion;
@@ -81,6 +82,7 @@ type
   function  ErrorOutput: BPTR;
   function  FastRand(seed: ULONG): ULONG;
   procedure FreeIEvents(ie: PInputEvent);
+  function  GetRexxVar(msg: PRexxMsg; const varname: STRPTR; value: PPChar): LONG;
   function  HookEntry(hook: PHook; obj: APTR; param: APTR): IPTR;
   function  HotKey(description: STRPTR; port: PMsgPort; id: LONG): PCxObj;
   function  InvertString(str: STRPTR; km: PKeyMap): PInputEvent;
@@ -98,6 +100,7 @@ type
   function  RangeRand(maxValue: ULONG): ULONG;
   procedure RemTOF(i: PIsrvstr); unimplemented;
   function  SelectErrorOutput(fh: BPTR): BPTR;
+  function  SetRexxVar(msg: PRexxMsg; const varname: STRPTR; value: PChar; len: ULONG): LONG;
   function  SetSuperAttrs(cl: PIClass; Obj: PObject_; Tags: array of const): IPTR;
   function  SetSuperAttrsA(cl: PIClass; Obj: PObject_; TagList: PTagItem): IPTR;
   function  TimeDelay(timerUnit: LONG; Seconds: ULONG; MicroSeconds: ULONG): LONG;
@@ -1331,6 +1334,216 @@ begin
 
   HotKey := filter;
 end;
+
+
+
+// ###########################################################################
+// ###
+// ###    Rexx
+// ###
+// ###########################################################################
+
+
+
+function  GetRexxVar(msg: PRexxMsg; const varname: STRPTR; value: PPChar): LONG;
+var
+  RexxSysBase   : PLibrary = nil;
+  msg2          : PRexxMsg = nil;
+  msg3          : PRexxMsg;
+  port          : PMsgPort = nil;
+  rexxport      : PMsgPort;
+  retval        : LONG = ERR10_003;
+begin
+  {$IFDEF AROS}
+  RexxSysBase := Rexx.RexxSysBase;
+  {$ELSE}
+  RexxSysBase := OpenLibrary('rexxsyslib.library', 0);
+  {$ENDIF}
+  if (RexxSysBase <> nil) then
+  begin
+    if IsRexxMsg(msg) then
+    begin
+
+      rexxport := FindPort('REXX');
+      if (rexxport <> nil) then
+      begin
+        port := CreateMsgPort;
+        if (port <> nil) then
+        begin
+          msg2 := CreateRexxMsg(port, nil, nil);
+          if (msg2 <> nil) then
+          begin
+            msg2^.rm_Private1 := msg^.rm_Private1;
+            msg2^.rm_Private2 := msg^.rm_Private2;
+            msg2^.rm_Action := LongInt(RXGETVAR) or 1;
+            msg2^.rm_Args[0] := IPTR(CreateArgstring(varname, strlen(varname)));
+            if (msg2^.rm_Args[0] <> 0) then
+            begin
+              PutMsg(rexxport, PMessage(msg2));
+              msg3 := nil;
+              while (msg3 <> msg2) do
+              begin
+                WaitPort(port);
+                msg3 := PRexxMsg(GetMsg(port));
+                if (msg3 <> msg2) then ReplyMsg(PMessage(msg3));
+              end;
+
+              if (msg3^.rm_Result1 = RC_OK) then
+              begin
+               value^ := PChar(msg3^.rm_Result2);
+               retval := RC_OK;
+              end
+              else retval := LONG(msg3^.rm_Result2);
+            end;
+          end;
+        end;
+      end
+      else retval := ERR10_013;
+    end
+    else retval := ERR10_010;
+  end;
+
+  if (msg2 <> nil) then
+  begin
+    if (msg2^.rm_Args[0] <> 0) then DeleteArgstring(PChar(msg2^.rm_Args[0]));
+    DeleteRexxMsg(msg2);
+  end;
+
+  if (port <> nil) then DeletePort(port);
+  {$IFNDEF AROS}
+  if (RexxSysBase <> nil) then CloseLibrary(RexxSysBase);
+  {$ENDIF}
+
+  GetRexxVar := retval;
+end;
+
+
+function  SetRexxVar(msg: PRexxMsg; const varname: STRPTR; value: PChar; len: ULONG): LONG;
+var
+  RexxSysBase   : PLibrary = nil;
+  msg2          : PRexxMsg = nil;
+  msg3          : PRexxMsg;
+  port          : PMsgPort = nil;
+  rexxport      : PMsgPort;
+  retval        : LONG = ERR10_003;
+begin
+  {$IFDEF AROS}
+  RexxSysBase := Rexx.RexxSysBase;
+  {$ELSE}
+  RexxSysBase := OpenLibrary('rexxsyslib.library', 0);
+  {$ENDIF}
+  if Assigned(RexxSysBase) then
+  begin
+    if IsRexxMsg(msg) then
+    begin
+      rexxport := FindPort('REXX');
+      if Assigned(rexxport) then
+      begin
+        port := CreateMsgPort;
+        if Assigned(port) then
+        begin
+          msg2 := CreateRexxMsg(port, nil, nil);
+          if Assigned(msg2) then
+          begin
+
+            msg2^.rm_Private1 := msg^.rm_Private1;
+            msg2^.rm_Private2 := msg^.rm_Private2;
+            msg2^.rm_Action := LongInt(RXSETVAR) or 2;
+            msg2^.rm_Args[0] := IPTR(CreateArgstring(varname, strlen(varname)));
+            msg2^.rm_Args[1] := IPTR(CreateArgstring(value, len));
+            
+            if ( (msg2^.rm_Args[0] <> 0) and (msg2^.rm_Args[1] <> 0)) then
+            begin
+
+              PutMsg(rexxport, PMessage(msg2));
+              msg3 := nil;
+              while (msg3 <> msg2) do
+              begin
+                WaitPort(port);
+                msg3 := PRexxMsg(GetMsg(port));
+                if (msg3 <> msg2) then ReplyMsg(PMessage(msg3));
+              end;
+
+              if (msg3^.rm_Result1 = RC_OK) 
+              then retval := 0
+              else retval := LONG(msg3^.rm_Result2);
+            end;
+            if (msg2^.rm_Args[0] <> 0) then DeleteArgstring(PChar(msg2^.rm_Args[0]));
+            if (msg2^.rm_Args[1] <> 0) then DeleteArgstring(PChar(msg2^.rm_Args[1]));            
+            DeleteRexxMsg(msg2);
+          end;
+          DeletePort(port);
+        end;
+      end
+      else retval := ERR10_013;
+    end
+    else retval := ERR10_010;
+    {$IFNDEF AROS}
+    CloseLibrary(RexxSysBase);
+    {$ENDIF}
+  end;
+  
+  SetRexxVar := RetVal;
+end;
+
+
+function  CheckRexxMsg(msg: PRexxMsg): LongBool;
+var
+  RexxSysBase   : PLibrary = nil;
+  msg2          : PRexxMsg = nil;
+  msg3          : PRexxMsg;
+  port          : PMsgPort = nil;
+  rexxport      : PMsgPort;
+  retval        : LongBool = FALSE;  
+begin
+  {$IFDEF AROS}
+  RexxSysBase := Rexx.RexxSysBase;
+  {$ELSE}
+  RexxSysBase = OpenLibrary('rexxsyslib.library', 0);
+  {$ENDIF}
+  if Assigned(RexxSysBase) then
+  begin
+    if IsRexxMsg(msg) then
+    begin
+      rexxport := FindPort('REXX');
+      if Assigned(rexxport) then
+      begin
+        port := CreateMsgPort;
+        if Assigned(port) then
+        begin
+          msg2 := CreateRexxMsg(port, nil, nil);
+          if Assigned(msg2) then
+          begin
+
+            msg2^.rm_Private1 := msg^.rm_Private1;
+            msg2^.rm_Private2 := msg^.rm_Private2;
+            msg2^.rm_Action := LongInt(RXCHECKMSG);
+
+            PutMsg(rexxport, PMessage(msg2));
+            msg3 := nil;
+            while (msg3 <> msg2) do
+            begin
+              WaitPort(port);
+              msg3 := PRexxMsg(GetMsg(port));
+              if (msg3 <> msg2) then ReplyMsg(PMessage(msg3));
+            end;
+
+            retval := msg3^.rm_Result1 = RC_OK;
+
+            DeleteRexxMsg(msg2);
+          end;
+          DeletePort(port);
+        end;
+      end;
+    end;
+    {$IFNDEF AROS}
+    CloseLibrary(RexxSysBase);
+    {$ENDIF}
+  end;
+  
+  CheckRexxMsg := RetVal;
+end;
+
 
 
 end.
