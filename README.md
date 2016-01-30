@@ -25,3 +25,5 @@ If you are new to the Amiga, AROS and/or MorphOS targets, then please feel free 
 The current status of Trinity can be read on ALB42's Free Pascal wiki website on the [Trinity in Trouble page](http://fpcaroswiki.alb42.de/index.php?title=Trinity_in_Trouble).
 
 Please enjoy!
+
+PS: Due to recent changes to trunk, it is not possible anymore to use these examples and fixes for FPC trunk. They will however still work with FPC 3.0 release.
