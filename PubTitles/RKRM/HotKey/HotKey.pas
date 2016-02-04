@@ -35,7 +35,7 @@ Uses
   {$IFDEF AMIGA}
   // (re)define structure Newbroker from commodities.pas in order
   // to align the structure properly with packrecords 2.
-  // Not doing so result in a crash becuase fileds are not aligned properly
+  // Not doing so result in a crash because fields are not aligned properly
   // otherwise.
   {$PACKRECORDS 2}
   Type
