@@ -1,11 +1,11 @@
-program mapansi;
+program maprawkey;
 
 {$IFNDEF HASAMIGA}
 {$FATAL This source is compatible with Amiga, AROS and MorphOS only !}
 {$ENDIF}
 
 {
-  Project   : mapansi
+  Project   : maprawkey
   Topic     : Map Intuition RAWKEY events to ANSI with MapRawKey().
   Source    : RKRM
 }
@@ -97,7 +97,7 @@ begin
           inputevt.ie_position.ie_addr := APTR(eventptr^);
 
           //* Map RAWKEY to ANSI */
-          i := MapRawKey(@inputevt, @buffer, 8, nil);
+          i := KeyMap.MapRawKey(@inputevt, @buffer, 8, nil);
 
           if (i = -1) then DOSWrite(DOSOutput, PChar('*Overflow*'), 10)
           else if (i <> 0) then
