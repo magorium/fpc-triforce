@@ -4,6 +4,9 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2016-02-27  $ MorphOS: LoadRGB4()
+//             $ AROS: VideoControl()
+//             $ Amiga + MorphOS: BltClear()
 // 2016-01-12  $ AROS: NewCreateTask()
 // 2016-01-11  $ Amiga + AROS: CreateContext() + PPGadget;
 // 2015-12-29  $ MorphOS: SetPointer()
@@ -975,6 +978,51 @@ Type
   {$IFDEF AROS}
   function  NewCreateTaskA(tags: PTagItem): PTask; syscall AOS_ExecBase 153;
   function  NewCreateTask(const Tags: array of const): PTask;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: BltClear()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AMIGA}
+  procedure BltClear(memBlock: Pointer location 'a1'; byteCount: ULONG location 'd0'; flags: ULONG location 'd1'); syscall GfxBase 300;
+  {$ENDIF}
+  {$IFDEF MORPHOS}
+  procedure BltClear(memBlock: Pointer location 'a1'; byteCount: ULONG location 'd0'; flags: ULONG location 'd1'); SysCall GfxBase 300;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: VideoCOntrol()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF AROS}
+  function  VideoControl(colorMap: PColorMap; tagarray: PTagItem): LongBool; syscall GfxBase 118; unimplemented;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: LoadRGB4()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  procedure LoadRGB4(vp: PViewPort location 'a0'; colors: PWORD location 'a1'; count: SmallInt location 'd0'); SysCall GfxBase 192;
   {$ENDIF}
 
 
