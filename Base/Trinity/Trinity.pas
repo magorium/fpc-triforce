@@ -4,6 +4,7 @@ unit Trinity;
 // ---------------------------------------------------------------------------
 // Edit Date   $ Entry 
 // ---------------------------------------------------------------------------
+// 2016-03-12  $ MorphOS: ChangeSprite()
 // 2016-02-27  $ MorphOS: LoadRGB4()
 //             $ AROS: VideoControl()
 //             $ Amiga + MorphOS: BltClear()
@@ -1023,6 +1024,20 @@ Type
 
   {$IFDEF MORPHOS}
   procedure LoadRGB4(vp: PViewPort location 'a0'; colors: PWORD location 'a1'; count: SmallInt location 'd0'); SysCall GfxBase 192;
+  {$ENDIF}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Topic: ChangeSprite()
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+  {$IFDEF MORPHOS}
+  procedure ChangeSprite(vp: PViewPort location 'a0'; sprite: PSimpleSprite location 'a1'; newData: Pointer location 'a2'); SysCall GfxBase 420; overload;
   {$ENDIF}
 
 
