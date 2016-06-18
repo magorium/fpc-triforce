@@ -8,3 +8,4 @@ RKM Companion
 | Commodities | broker        | Broker example
 | Commodities | HotKey        | A simple HotKey commodity
 | Commodities | PopShell      | A simple PopShell commodity
+| Exec-Lists  | buildlist     | Example using a list
