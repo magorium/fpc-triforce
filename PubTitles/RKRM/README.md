@@ -9,3 +9,5 @@ RKM Companion
 | Commodities | HotKey        | A simple HotKey commodity
 | Commodities | PopShell      | A simple PopShell commodity
 | Exec-Lists  | buildlist     | Example using a list
+| Exec-memory | allocate      | Allocate memory blocks
+| Exec-memory | allocentry    | Allocate memory list
