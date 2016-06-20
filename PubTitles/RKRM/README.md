@@ -11,3 +11,5 @@ RKM Companion
 | Exec-Lists  | buildlist     | Example using a list
 | Exec-Memory | allocate      | Allocate memory blocks
 | Exec-Memory | allocentry    | Allocate memory list
+| Exec-Ports  | port1         | Port and message example
+| Exec-Ports  | port2         | Port and message example
