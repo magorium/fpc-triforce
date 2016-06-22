@@ -14,3 +14,5 @@ RKM Companion
 | Exec-Ports   | port1         | Port and message example
 | Exec-Ports   | port2         | Port and message example
 | Exec-Signals | signals       | Subtask signaling
+| Exec-Tasks   | simpletask    | Running a subtask
+| Exec-Tasks   | tasklist      | List of tasks
