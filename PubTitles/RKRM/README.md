@@ -16,3 +16,4 @@ RKM Companion
 | Exec-Signals | signals       | Subtask signaling
 | Exec-Tasks   | simpletask    | Running a subtask
 | Exec-Tasks   | tasklist      | List of tasks
+[ Expansion    | findboards    | Display autoconfig boards
