@@ -23,3 +23,5 @@ RKM Companion
 [ Graphics-Layers     | clipping        | Clipping a region
 [ Graphics-Layers     | Layerss         | Clipping with multiple layers
 [ Graphics-Primitives | RGBBoxes        | Viewport graphics
+[ Graphics-Text       | AvailFonts      | Display fonts available to system
+[ Graphics-Text       | Measuretext     | Render text to fit window
