@@ -25,3 +25,5 @@ RKM Companion
 [ Graphics-Primitives | RGBBoxes        | Viewport graphics
 [ Graphics-Text       | AvailFonts      | Display fonts available to system
 [ Graphics-Text       | Measuretext     | Render text to fit window
+[ IFFParse            | clipftxt        | Read/Write iff clipboard contents
+[ IFFParse            | sift            | Parse and display chunks for IFF files
