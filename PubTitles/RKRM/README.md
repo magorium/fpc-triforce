@@ -27,3 +27,5 @@ RKM Companion
 [ Graphics-Text       | Measuretext     | Render text to fit window
 [ IFFParse            | clipftxt        | Read/Write iff clipboard contents
 [ IFFParse            | sift            | Parse and display chunks for IFF files
+[ Intuition-Boopsi    | RKRMButClass    | Boopsi button class
+[ Intuition-Boopsi    | Talk2Boopsi     | Boopsi communication
