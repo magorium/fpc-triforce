@@ -29,3 +29,6 @@ RKM Companion
 [ IFFParse            | sift            | Parse and display chunks for IFF files
 [ Intuition-Boopsi    | RKRMButClass    | Boopsi button class
 [ Intuition-Boopsi    | Talk2Boopsi     | Boopsi communication
+[ Intuition-Gadgets   | simplegad       | Show the use of a button gadget
+[ Intuition-Gadgets   | strhooks        | String gadget hooks demo
+[ Intuition-Gadgets   | updatestrgad    | Show the use of a string gadget
