@@ -32,6 +32,7 @@ RKM Companion
 [ Intuition-Gadgets     | simplegad       | Show the use of a button gadget
 [ Intuition-Gadgets     | strhooks        | String gadget hooks demo
 [ Intuition-Gadgets     | updatestrgad    | Show the use of a string gadget
+[ Intuition-GUI         | easyintuition37 | Simple Intuition program for v36 and up
 [ Intuition-Images-Text | compleximage    | Usage of a complex Intuition image
 [ Intuition-Images-Text | intuitext       | How to use an Intuitext object
 [ Intuition-Images-Text | shadowborder    | Intuition borders
