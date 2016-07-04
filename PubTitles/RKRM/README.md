@@ -37,3 +37,4 @@ RKM Companion
 [ Intuition-Images-Text | intuitext       | How to use an Intuitext object
 [ Intuition-Images-Text | shadowborder    | Intuition borders
 [ Intuition-Images-Text | simpleimage     | Usage of a simple Intuition image
+[ Intuition-IO-Methods  | eventloop       | Handle Intuition messages from IDCMP
