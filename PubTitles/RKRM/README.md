@@ -16,27 +16,27 @@ RKM Companion
 | Exec-Signals          | signals         | Subtask signaling
 | Exec-Tasks            | simpletask      | Running a subtask
 | Exec-Tasks            | tasklist        | List of tasks
-[ Expansion             | findboards      | Display autoconfig boards
-[ GadTools              | gadtoolsgadgets | Some GadTools gadgets
-[ GadTools              | gadtoolsmenu    | Menu layout with GadTools
-[ GadTools              | simplegtgadget  | Use newgadget to create a simple button gadget
-[ Graphics-Layers       | clipping        | Clipping a region
-[ Graphics-Layers       | Layerss         | Clipping with multiple layers
-[ Graphics-Primitives   | RGBBoxes        | Viewport graphics
-[ Graphics-Text         | AvailFonts      | Display fonts available to system
-[ Graphics-Text         | Measuretext     | Render text to fit window
-[ IFFParse              | clipftxt        | Read/Write iff clipboard contents
-[ IFFParse              | sift            | Parse and display chunks for IFF files
-[ Intuition-Boopsi      | RKRMButClass    | Boopsi button class
-[ Intuition-Boopsi      | Talk2Boopsi     | Boopsi communication
-[ Intuition-Gadgets     | simplegad       | Show the use of a button gadget
-[ Intuition-Gadgets     | strhooks        | String gadget hooks demo
-[ Intuition-Gadgets     | updatestrgad    | Show the use of a string gadget
-[ Intuition-GUI         | easyintuition37 | Simple Intuition program for v36 and up
-[ Intuition-Images-Text | compleximage    | Usage of a complex Intuition image
-[ Intuition-Images-Text | intuitext       | How to use an Intuitext object
-[ Intuition-Images-Text | shadowborder    | Intuition borders
-[ Intuition-Images-Text | simpleimage     | Usage of a simple Intuition image
-[ Intuition-IO-Methods  | eventloop       | Handle Intuition messages from IDCMP
-[ Intuition-Menus       | menulayout      | Handling menu events
-[ Intuition-Menus       | simplemenu      | Shows how to use the menu system
+| Expansion             | findboards      | Display autoconfig boards
+| GadTools              | gadtoolsgadgets | Some GadTools gadgets
+| GadTools              | gadtoolsmenu    | Menu layout with GadTools
+| GadTools              | simplegtgadget  | Use newgadget to create a simple button gadget
+| Graphics-Layers       | clipping        | Clipping a region
+| Graphics-Layers       | Layerss         | Clipping with multiple layers
+| Graphics-Primitives   | RGBBoxes        | Viewport graphics
+| Graphics-Text         | AvailFonts      | Display fonts available to system
+| Graphics-Text         | Measuretext     | Render text to fit window
+| IFFParse              | clipftxt        | Read/Write iff clipboard contents
+| IFFParse              | sift            | Parse and display chunks for IFF files
+| Intuition-Boopsi      | RKRMButClass    | Boopsi button class
+| Intuition-Boopsi      | Talk2Boopsi     | Boopsi communication
+| Intuition-Gadgets     | simplegad       | Show the use of a button gadget
+| Intuition-Gadgets     | strhooks        | String gadget hooks demo
+| Intuition-Gadgets     | updatestrgad    | Show the use of a string gadget
+| Intuition-GUI         | easyintuition37 | Simple Intuition program for v36 and up
+| Intuition-Images-Text | compleximage    | Usage of a complex Intuition image
+| Intuition-Images-Text | intuitext       | How to use an Intuitext object
+| Intuition-Images-Text | shadowborder    | Intuition borders
+| Intuition-Images-Text | simpleimage     | Usage of a simple Intuition image
+| Intuition-IO-Methods  | eventloop       | Handle Intuition messages from IDCMP
+| Intuition-Menus       | menulayout      | Handling menu events
+| Intuition-Menus       | simplemenu      | Shows how to use the menu system
