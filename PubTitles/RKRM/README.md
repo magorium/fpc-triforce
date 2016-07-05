@@ -38,3 +38,5 @@ RKM Companion
 [ Intuition-Images-Text | shadowborder    | Intuition borders
 [ Intuition-Images-Text | simpleimage     | Usage of a simple Intuition image
 [ Intuition-IO-Methods  | eventloop       | Handle Intuition messages from IDCMP
+[ Intuition-Menus       | menulayout      | Handling menu events
+[ Intuition-Menus       | simplemenu      | Shows how to use the menu system
