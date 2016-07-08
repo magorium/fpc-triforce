@@ -44,3 +44,6 @@ RKM Companion
 | Intuition-Mouse-Keyboard    | rawkey          | Shows How to convert from RAWKEY to keymapped ASCII
 | Intuition-Requesters-Alerts | displayalert    | Display a recoverable alert
 | Intuition-Requesters-Alerts | easyrequest     | Shows how to use an easy requester
+| Intuition-Screens           | clonescreen     | Clone a public screen
+| Intuition-Screens           | newlookscreen   | Open a newlook screen
+| Intuition-Screens           | publicscreen    | Open a public screen
