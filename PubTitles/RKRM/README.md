@@ -47,3 +47,4 @@ RKM Companion
 | Intuition-Screens           | clonescreen     | Clone a public screen
 | Intuition-Screens           | newlookscreen   | Open a newlook screen
 | Intuition-Screens           | publicscreen    | Open a public screen
+| Intuition-Special           | remembertest    | Demonstrates use of Remember functions
