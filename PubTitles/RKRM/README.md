@@ -48,3 +48,7 @@ RKM Companion
 | Intuition-Screens           | newlookscreen   | Open a newlook screen
 | Intuition-Screens           | publicscreen    | Open a public screen
 | Intuition-Special           | remembertest    | Demonstrates use of Remember functions
+| Intuition-Windows           | lines           | Implement a superbitmap with scroll gadgets
+| Intuition-Windows           | openwindowtags  | Open a new window using a taglist to set window attributes
+| Intuition-Windows           | visiblewindow   | Open a window on and as large as the visible part of the screen
+| Intuition-Windows           | winpubscreen    | Open a window on the default public screen
