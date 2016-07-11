@@ -52,3 +52,5 @@ RKM Companion
 | Intuition-Windows           | openwindowtags  | Open a new window using a taglist to set window attributes
 | Intuition-Windows           | visiblewindow   | Open a window on and as large as the visible part of the screen
 | Intuition-Windows           | winpubscreen    | Open a window on the default public screen
+| Keymap                      | mapansi         | Convert string to input events
+| Keymap                      | maprawkey       | Map Intuition rawkey events to ansi
