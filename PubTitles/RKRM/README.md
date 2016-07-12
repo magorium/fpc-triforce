@@ -54,3 +54,5 @@ RKM Companion
 | Intuition-Windows           | winpubscreen    | Open a window on the default public screen
 | Keymap                      | mapansi         | Convert string to input events
 | Keymap                      | maprawkey       | Map Intuition rawkey events to ansi
+| Preferences                 | prefnotify      | Get notified when preferences get updated
+| Preferences                 | showprefs       | Read preferences file (manually)
