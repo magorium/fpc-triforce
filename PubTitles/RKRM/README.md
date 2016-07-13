@@ -56,3 +56,8 @@ RKM Companion
 | Keymap                      | maprawkey       | Map Intuition rawkey events to ansi
 | Preferences                 | prefnotify      | Get notified when preferences get updated
 | Preferences                 | showprefs       | Read preferences file (manually)
+| Utility                     | a2d             | Converting between amiga clock and date/time
+| Utility                     | hooks1          | Implementing and using hooks
+| Utility                     | istr            | String comparison with international character support
+| Utility                     | tag1            | Working with tags
+| Utility                     | uptime          | Retrieve and display the uptime
