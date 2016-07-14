@@ -61,3 +61,7 @@ RKM Companion
 | Utility                     | istr            | String comparison with international character support
 | Utility                     | tag1            | Working with tags
 | Utility                     | uptime          | Retrieve and display the uptime
+| Workbench                   | appicon         | Application icon drag and drop
+| Workbench                   | appmenu         | Add an application specific menu item to the workbench
+| Workbench                   | appwindow       | Application window drag and drop
+| Workbench                   | iconexample     | Icon creation, reading and parsing
