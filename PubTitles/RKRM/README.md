@@ -23,6 +23,7 @@ RKM Companion
 | Graphics-Layers             | clipping        | Clipping a region
 | Graphics-Layers             | Layerss         | Clipping with multiple layers
 | Graphics-Primitives         | RGBBoxes        | Viewport graphics
+| Graphics-Sprites-Bobs       | ssprite         | Simple sprite example
 | Graphics-Text               | AvailFonts      | Display fonts available to system
 | Graphics-Text               | Measuretext     | Render text to fit window
 | IFFParse                    | clipftxt        | Read/Write iff clipboard contents
