@@ -48,6 +48,7 @@ RKM Companion
 | Intuition-Screens           | clonescreen     | Clone a public screen
 | Intuition-Screens           | newlookscreen   | Open a newlook screen
 | Intuition-Screens           | publicscreen    | Open a public screen
+| Intuition-Screens           | pubscreenbeep   | Find a public screen, lock it to beep and unlock
 | Intuition-Special           | remembertest    | Demonstrates use of Remember functions
 | Intuition-Windows           | lines           | Implement a superbitmap with scroll gadgets
 | Intuition-Windows           | openwindowtags  | Open a new window using a taglist to set window attributes
