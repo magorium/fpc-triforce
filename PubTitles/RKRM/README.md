@@ -60,6 +60,7 @@ RKM Companion
 | Preferences                 | prefnotify      | Get notified when preferences get updated
 | Preferences                 | showprefs       | Read preferences file (manually)
 | Timer                       | Get_Systime     | Get system time example
+| Timer                       | Multiple_Timers | Managing multiple timers
 | Utility                     | a2d             | Converting between amiga clock and date/time
 | Utility                     | hooks1          | Implementing and using hooks
 | Utility                     | istr            | String comparison with international character support
