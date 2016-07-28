@@ -143,9 +143,5 @@ end;
 
 
 begin
-  WriteLn('enter');
-
   Main;  
-  
-  WriteLn('leave');
 end.
