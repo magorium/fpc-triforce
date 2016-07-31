@@ -284,9 +284,5 @@ end;    //* end of main */
 
 
 begin
-  WriteLn('enter');
-
   Main(argc, argv);
-  
-  WriteLn('leave');
 end.
